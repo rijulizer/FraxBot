@@ -2,23 +2,43 @@ version: "3.1"
 
 intents:
   - greet
-  - goodbye
   - affirm
   - deny
-  - mood_great
-  - mood_unhappy
-  - bot_challenge
+  - goodbye
+  - get_current_wallet_status
+  - subscribe_daily_updates
+  - get_list_of_existing_subscibed_wallets
+  - unsubscibe
 
 responses:
   utter_greet:
-  - text: "Hey! How are you?"
+  - text: "Hey! I am the Frax-Lend Bot"
+  - text: "Hi! I am the Frax-Lend Bot"
+  - text: "Hello! I am the Frax-Lend Bot"
 
-  utter_cheer_up:
-  - text: "Here is something to cheer you up:"
-    image: "https://i.imgur.com/nGF1K8f.jpg"
+  utter_intro:
+  - text: "Currently, I can help you with - |
+    * 1. Get the current status of your positions. |
+    * 2. Subscribe to get daily updates about your positions. |
+    * 1. Get list of already subscribed wallets. |
+    * 1. Un-subscribe an wallet. "
+    buttons:
+    - title: "Get current status"
+      payload: "/get_current_wallet_status"
+    - title: "Subscribe"
+      payload: "/subscribe_daily_updates"
+    - title: "Get list of subscibed wallets"
+      payload: "/get_list_of_existing_subscibed_wallets"
+    - title: "Unsubscibe"
+      payload: "/unsubscibe"
 
-  utter_did_that_help:
-  - text: "Did that help you?"
+  utter_ending:
+  - text: "Would you like to end the conversation or continue?"
+    buttons:
+      - title: "End"
+        payload: "/deny"
+      - title: "Continue"
+        payload: "/affirm"
 
   utter_happy:
   - text: "Great, carry on!"
