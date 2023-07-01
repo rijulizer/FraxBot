@@ -345,7 +345,7 @@ async def select(event):
 
 if __name__ == '__main__':
     try:
-        connection_string = "mongodb+srv://meghachakravorty:jgOokbXraHxWjHHx@cluster0.h1o4nlj.mongodb.net/"
+        connection_string = config.get('default','connection_string')
 
         db_client = MongoClient(connection_string, connect=False)
 
