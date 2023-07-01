@@ -27,7 +27,7 @@ session_name = "sessions/Bot"
 URL = "https://api.telegram.org/bot{}/".format(BOT_TOKEN)
 
 # client = TelegramClient(session_name, API_ID, API_HASH).start(bot_token=BOT_TOKEN)
-connection_string = "mongodb+srv://meghachakravorty:jgOokbXraHxWjHHx@cluster0.h1o4nlj.mongodb.net/"
+connection_string = config.get('default','connection_string')
 
 db_client = MongoClient(connection_string, connect=False)
 
