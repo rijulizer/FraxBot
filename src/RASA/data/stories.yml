@@ -2,13 +2,22 @@ version: "3.1"
 
 stories:
 
-- story: introduction
+# - story: introduction
+#   steps:
+#   - intent: greet
+#   - action: utter_greet
+#   - action: utter_intro
+#   - intent: affirm
+#   - action: utter_ending
+#   - intent: deny
+#   - action: utter_goodbye
+
+- story: introduction2
   steps:
   - intent: greet
-  - action: utter_greet
+  - action: action_hello_world
   - action: utter_intro
   - intent: affirm
   - action: utter_ending
   - intent: deny
   - action: utter_goodbye
-
