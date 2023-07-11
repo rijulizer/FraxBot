@@ -11,3 +11,15 @@ rules:
   steps:
   - intent: bot_challenge
   - action: utter_iamabot
+
+- rule: Once a task is done end conversation 
+  steps:
+  - action: utter_ending
+  - intent: deny
+  - action: utter_goodbye
+
+- rule: Once a task is done continue conversation
+  steps:
+  - action: utter_ending
+  - intent: affirm
+  - action: action_bot_intro

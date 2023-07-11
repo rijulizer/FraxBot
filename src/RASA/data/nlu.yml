@@ -40,6 +40,7 @@ nlu:
     - of course
     - that sounds good
     - correct
+    - continue
 
 - intent: deny
   examples: |
@@ -50,40 +51,7 @@ nlu:
     - don't like that
     - no way
     - not really
-
-- intent: mood_great
-  examples: |
-    - perfect
-    - great
-    - amazing
-    - feeling like a king
-    - wonderful
-    - I am feeling very good
-    - I am great
-    - I am amazing
-    - I am going to save the world
-    - super stoked
-    - extremely good
-    - so so perfect
-    - so good
-    - so perfect
-
-- intent: mood_unhappy
-  examples: |
-    - my day was horrible
-    - I am sad
-    - I don't feel very well
-    - I am disappointed
-    - super sad
-    - I'm so sad
-    - sad
-    - very sad
-    - unhappy
-    - not good
-    - not very good
-    - extremly sad
-    - so saad
-    - so sad
+    - end
 
 - intent: bot_challenge
   examples: |
@@ -91,3 +59,33 @@ nlu:
     - are you a human?
     - am I talking to a bot?
     - am I talking to a human?
+
+- intent: get_current_wallet_status
+  examples: |
+    - Show my current wallet satatus.
+    - what is my current positions?
+    - my positions?
+    - whats the status?
+    - any updates?
+
+- intent: subscribe_daily_updates
+  examples: |
+    - How to subscribe?
+    - How do I subscribe a wallet?
+    - subscribe
+    - I want to get daily updates.
+    - give me daily updates
+
+- intent: get_list_of_existing_subscibed_wallets
+  examples: |
+    - Already subscribed?
+    - show my existing subscribed list.
+
+- intent: unsubscibe
+  examples: |
+    - unsubscribe.
+    - un-subscribe
+    - How to unsubscribe?
+    - How do I unsubscribe a wallet?
+    - I want to cancel my subscription.
+    - I want to end my subscription.
