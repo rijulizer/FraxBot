@@ -15,8 +15,8 @@ stories:
 - story: introduction2
   steps:
   - intent: greet
-  - action: action_hello_world
-  - action: utter_intro
+  - action: action_bot_intro
+  - action: action_get_data
   - intent: affirm
   - action: utter_ending
   - intent: deny

@@ -22,4 +22,4 @@ rules:
   steps:
   - action: utter_ending
   - intent: affirm
-  - action: utter_intro
+  - action: action_bot_intro
