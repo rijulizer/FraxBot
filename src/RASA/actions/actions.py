@@ -6,107 +6,21 @@ from typing import Any, Text, Dict, List
 from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.events import SlotSet, SessionStarted, ActionExecuted
-from datetime import datetime
-import pymongo
-from pymongo import MongoClient
-import yaml
-import os
-import numpy as np
-import pandas as pd
+
+# import pymongo
+# from pymongo import MongoClient
+# import yaml
+# import os
 
 from common import mongodb_connect
+from common import get_subscribed_wallets, add_wallets_for_subscription, update_wallets_for_subscription
+from common import format_telegram_metadata, upload_channel_metadata, check_returning_user
 
-def format_date(messageTime):
-    messageTime = datetime.fromtimestamp(messageTime) # datetime format
-    messageTime = messageTime.strftime('%Y-%m-%d %H:%M:%S') # formatted datetime    
-    TimeStamp = str(messageTime)
-    return (TimeStamp)
+# get monogdb collections
+(db, telegram_metadata, subscription, pairs, wallet) = mongodb_connect()
 
-def format_telegram_metadata(result):
-    (
-        message_id,
-        user_id, 
-        update_id, 
-        is_bot, 
-        first_name, 
-        last_name, 
-        username, 
-        date, 
-        user_account_type, 
-        message, 
-        language
-     ) = (
-            None,
-            None, 
-            None, 
-            None, 
-            None, 
-            None, 
-            None, 
-            None, 
-            None, 
-            None, 
-            None
-     )
-    if result:
-        if 'update_id' in result.keys():
-            update_id = result['update_id']
-        if 'message' in result.keys():
-            if 'message_id' in result['message'].keys():
-                message_id = result['message']['message_id']
-            if 'from' in result['message'].keys():
-                if 'id' in result['message']['from'].keys():
-                    user_id = result['message']['from']['id']
-                if 'is_bot' in result['message']['from'].keys():
-                    is_bot = result['message']['from']['is_bot']
-                if 'first_name' in result['message']['from'].keys():
-                    first_name = result['message']['from']['first_name']
-                if 'last_name' in result['message']['from'].keys():
-                    last_name = result['message']['from']['last_name']
-                if 'username' in result['message']['from'].keys():
-                    username = result['message']['from']['username']
-                if 'language_code' in result['message']['from'].keys():
-                    language = result['message']['from']['language_code']
-            if 'date' in result['message'].keys():
-                date = format_date(int(result['message']['date']))
-            if 'chat' in result['message'].keys():
-                user_account_type = result['message']['chat']['type']
-            if 'text' in result['message'].keys():
-                message = result['message']['text']
-    return(
-        {
-            "message_id" : message_id,
-            "user_id" : user_id, 
-            "update_id" : update_id, 
-            "is_bot" : is_bot, 
-            "first_name" : first_name, 
-            "last_name" : last_name, 
-            "username": username, 
-            "date": date, 
-            "user_account_type": user_account_type, 
-            "message": message, 
-            "language": language
-            }
-        )
-    
-def upload_metadata(metadata):
-    (_, telegram_metadata, _, _, _) = mongodb_connect()
-    telegram_metadata.insert_one(metadata)
-    print("[MongoDB] Metadata uploaded...")
-    return
-
-# class ActionHelloWorld(Action):
-
-#     def name(self) -> Text:
-#         return "action_hello_world"
-
-#     def run(self, dispatcher: CollectingDispatcher,
-#             tracker: Tracker,
-#             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-#         print("run  - action_hello_world")
-#         dispatcher.utter_message(text="Hello World!")
-
-#         return []
+# debug
+super_user_id = 6278581239
 
 class ActionSessionStart(Action):
     """
@@ -120,22 +34,28 @@ class ActionSessionStart(Action):
     async def run(
       self, dispatcher, tracker: Tracker, domain: Dict[Text, Any]
     ) -> List[Dict[Text, Any]]:
-        print('[Action] action_session_start....')
+        print('\n [Action] action_session_start....')
+        print(" [debug] SLOTS:", tracker.slots)
+        # check DB if the user is a returning user 
+        user_id  = super_user_id #R tracker.sender_id
+        if user_id:
+            returning_user = check_returning_user(telegram_metadata, user_id)
+        else: 
+            returning_user = True # Null users_ids are considered returning user
+        #set slot true if its a returning user
+        evt_slotset = SlotSet("slot_old_user", returning_user)
 
-        # get session started metadata
-        metadata = tracker.get_slot("session_started_metadata")
-        telegram_metadata = format_telegram_metadata(metadata)#tracker.latest_message["metadata"])
-        upload_metadata(telegram_metadata)
-
-        # Todo: check DB 
-        evt_slotset = SlotSet(key = "slot_old_user", value = "True")
-        
-        print("\n [Action] tracker.latest_message:\n",tracker.latest_message)
-        print("\n\n [Action] tracker.slots:\n",tracker.slots)
+        if user_id:
+            # Upload metadata if non null user_id
+            # get session started metadata
+            metadata = tracker.get_slot("session_started_metadata")
+            flag_data_none, channel_metadata = format_telegram_metadata(metadata)#tracker.latest_message["metadata"])
+            if flag_data_none:
+                upload_channel_metadata(telegram_metadata, channel_metadata)
 
         # the session should begin with a `session_started` event and an `action_listen`
         # as a user message follows
-        return [SessionStarted(), ActionExecuted("action_listen"), evt_slotset]
+        return [SessionStarted(), evt_slotset, ActionExecuted("action_listen")] 
     
 class ActionBotIntro(Action):
     """This action introduces the Bot features and provides options to carryforward conversation in terms of buttons"""
@@ -146,7 +66,8 @@ class ActionBotIntro(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         
-        print('[Action] action_bot_intro....')
+        print('\n [Action] action_bot_intro....')
+        print(" [debug] SLOTS:", tracker.slots)
 
         buttons = [{"title": "Current Positions" , "payload": "/get_current_wallet_status"},
                    {"title": "Subscribe", "payload": "/subscribe_daily_updates"},
@@ -155,32 +76,93 @@ class ActionBotIntro(Action):
                    {"title": "Exit", "payload": "/goodbye"}]
 
         if tracker.latest_message["intent"]["name"]=="greet":
-            dispatcher.utter_message(text= u"Welcome! I am Frax Bot \U0001f600 \nCurrently I can help you with the following - \n\t• View the current status of your positions \n\t• Subscribe to get daily updates about your positions  \n\t• Get list of already subscribed wallets \n\t• Un-subscribe an wallet" , buttons=buttons, button_type="vertical")
-        elif tracker.latest_message["intent"]["name"]=="continue":
-            dispatcher.utter_message(text= u"Great! What should we do next? \n\t• View the current status of your positions \n\t• Subscribe to get daily updates about your positions  \n\t• Get list of already subscribed wallets \n\t• Un-subscribe an wallet" , buttons=buttons, button_type="vertical")
+            dispatcher.utter_message(text= u"Welcome! I am Frax Bot \U0001f600 \nCurrently I can help you with the following - \n\t• View the current status of your positions \n\t• Subscribe to get daily updates about your positions \n\t• Get list of already subscribed wallets \n\t• Un-subscribe an wallet" , buttons=buttons, button_type="vertical")
+        else : #tracker.latest_message["intent"]["name"]=="continue":
+            dispatcher.utter_message(text= u"Great! What should we do next? \n\t• View the current status of your positions \n\t• Subscribe to get daily updates about your positions \n\t• Get list of already subscribed wallets \n\t• Un-subscribe an wallet" , buttons=buttons, button_type="vertical")
         return []
 
-class ActionGetData(Action):
-    """Debugging purpose"""
+# class ActionGetData(Action):
+#     """Debugging purpose"""
 
+#     def name(self) -> Text:
+#         return "action_get_data"
+
+#     def run(self, dispatcher: CollectingDispatcher,
+#             tracker: Tracker,
+#             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+#         print('[Action] action_get_data....')
+#         tck = tracker.latest_message
+#         print("\nLATEST MESSAGE:\n",tracker.latest_message)
+#         print("\nSLOTS:\n",tracker.slots)
+#         print("\nLatest_message_TEXT:\n",tracker.latest_message['text'])
+#         print("\nLatest_message_METADATA:\n",tracker.latest_message['metadata'])
+
+#         # dispatcher.utter_message(text=f"Could you tell me the id of the wallet you are interested in?")
+
+#         return []
+
+class ActionUnsubHandler(Action):
+    """This action introduces the Bot features and provides options to carryforward conversation in terms of buttons"""
     def name(self) -> Text:
-        return "action_get_data"
+        return "action_unsubscribe_handler"
 
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        
+        print('\n [Action] action_unsubscribe_handler....')
+        print(" [debug] SLOTS:", tracker.slots)
 
-        print('[Action] action_get_data....')
-        tck = tracker.latest_message
-        print("\nLATEST MESSAGE:\n",tracker.latest_message)
-        print("\nSLOTS:\n",tracker.slots)
-        print("\nLatest_message_TEXT:\n",tracker.latest_message['text'])
-        print("\nLatest_message_METADATA:\n",tracker.latest_message['metadata'])
+        # define default values
+        return_text = "You haven't subscribed any wallets yet"
+        wallet_buttons = None
+        slot_unsub_wallets_value = False
 
-        # dispatcher.utter_message(text=f"Could you tell me the id of the wallet you are interested in?")
+        if tracker.get_slot("slot_old_user"):
+            # old user flow
+            # get user id from tracke
+            user_id  = super_user_id #R tracker.sender_id
+            subscribed_wallets = get_subscribed_wallets(subscription, user_id)
+            if subscribed_wallets:
+                wallet_buttons = [{"title": wallet , "payload": wallet} for wallet in subscribed_wallets]
+                return_text = "Please select a wallet to unsubscribe"
+                #set slot true if there are wallets to unsubscribe
+                slot_unsub_wallets_value = True
+                
+        dispatcher.utter_message(text=return_text, buttons=wallet_buttons, button_type="vertical")
+        return [SlotSet("slot_unsub_wallets", slot_unsub_wallets_value)]
+    
+class ActionUnsubWallet(Action):
+    """This action introduces the Bot features and provides options to carryforward conversation in terms of buttons"""
+    def name(self) -> Text:
+        return "action_unsubscribe_wallet"
 
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        
+        print('\n [Action] action_unsubscribe_wallet....')
+        print(" [debug] SLOTS:", tracker.slots)
+
+        # get user id from tracker
+        user_id  = super_user_id #R tracker.sender_id
+        unsub_wallet = tracker.slots["slot_wallet_id"]
+        print(f" [debug] unsub_wallet - {unsub_wallet}")
+
+        subscribed_wallets = get_subscribed_wallets(subscription, user_id)
+        # remove the selected wallet from list of subscibed wallets
+        try:
+            modified_wallet_list = subscribed_wallets.copy()
+            modified_wallet_list.remove(unsub_wallet)
+        except:
+            modified_wallet_list = subscribed_wallets.copy()
+        print(f" [debug] modified_wallet_list - {modified_wallet_list}")
+
+        update_wallets_for_subscription(subscription, user_id, modified_wallet_list)
+
+        dispatcher.utter_message(text=f"The wallet {unsub_wallet} is removed from subscription")
         return []
-
 
 # class ActionGetWalletId(Action):
 

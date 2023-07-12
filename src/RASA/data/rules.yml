@@ -2,24 +2,44 @@ version: "3.1"
 
 rules:
 
+- rule: introduce bot anytime the user greets
+  steps:
+  - intent: greet
+  - action: action_bot_intro
+
 - rule: Say goodbye anytime the user says goodbye
   steps:
   - intent: goodbye
   - action: utter_goodbye
 
-- rule: Say 'I am a bot' anytime the user challenges
-  steps:
-  - intent: bot_challenge
-  - action: utter_iamabot
-
 - rule: Once a task is done end conversation 
   steps:
-  - action: utter_ending
+  - action: utter_continue_or_exit
   - intent: deny
   - action: utter_goodbye
 
 - rule: Once a task is done continue conversation
   steps:
-  - action: utter_ending
+  - action: utter_continue_or_exit
   - intent: affirm
   - action: action_bot_intro
+
+- rule: Activate form
+  steps:
+  - intent: wallet_id_detected
+  - action: form_wallet_id
+  - active_loop: form_wallet_id
+
+# - rule: Submit form
+#   condition:
+#   - active_loop: form_wallet_id
+#   steps:
+#   - action: form_wallet_id
+#   - active_loop: null
+#   - slot_was_set:
+#     - requested_slot: null
+    
+  # - action: action_unsubscribe_wallet
+  # - action: utter_continue_or_exit
+
+

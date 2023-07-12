@@ -12,12 +12,48 @@ stories:
 #   - intent: deny
 #   - action: utter_goodbye
 
-- story: introduction2
+- story: debug_intro
   steps:
   - intent: greet
   - action: action_bot_intro
-  - action: action_get_data
   - intent: affirm
-  - action: utter_ending
+  - action: utter_continue_or_exit
   - intent: deny
   - action: utter_goodbye
+
+- story: Unsubscribe complete path
+  steps:
+  - slot_was_set:
+    - slot_old_user: true
+  - intent: greet
+  - action: action_bot_intro
+  - intent: unsubscribe
+  - action: action_unsubscribe_handler
+  - slot_was_set:
+    - slot_unsub_wallets: true
+  - intent: wallet_id_detected
+    entities:
+    - wallet_id: '0xFFF444444C3f2B6E981799f57f58b73E647de3B6'
+  - action: form_wallet_id
+  - active_loop: form_wallet_id
+  - slot_was_set:
+    - slot_wallet_id: '0xFFF444444C3f2B6E981799f57f58b73E647de3B6'
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: action_unsubscribe_wallet
+  - action: utter_continue_or_exit
+  # - intent: deny
+  # - action: utter_goodbye
+
+- story: Unsubscribe incomplete path
+  steps:
+  - slot_was_set:
+    - slot_old_user
+  - intent: greet
+  - action: action_bot_intro
+  - intent: unsubscribe
+  - action: action_unsubscribe_handler
+  - slot_was_set:
+    - slot_unsub_wallets: false
+  - action: utter_continue_or_exit
