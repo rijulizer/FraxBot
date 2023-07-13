@@ -24,13 +24,13 @@ stories:
 - story: Unsubscribe complete path
   steps:
   - slot_was_set:
-    - slot_old_user: true
+    - slot_old_user: True
   - intent: greet
   - action: action_bot_intro
   - intent: unsubscribe
   - action: action_unsubscribe_handler
   - slot_was_set:
-    - slot_unsub_wallets: true
+    - slot_unsub_wallets: True
   - intent: wallet_id_detected
     entities:
     - wallet_id: '0xFFF444444C3f2B6E981799f57f58b73E647de3B6'
@@ -55,5 +55,5 @@ stories:
   - intent: unsubscribe
   - action: action_unsubscribe_handler
   - slot_was_set:
-    - slot_unsub_wallets: false
+    - slot_unsub_wallets: False
   - action: utter_continue_or_exit

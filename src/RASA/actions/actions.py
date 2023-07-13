@@ -5,7 +5,8 @@ sys.path.append('d:\\FRAX_project\\FraxBot\\src\\')
 from typing import Any, Text, Dict, List
 from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
-from rasa_sdk.events import SlotSet, SessionStarted, ActionExecuted
+from rasa_sdk.events import SlotSet, SessionStarted, ActionExecuted, FollowupAction
+
 
 # import pymongo
 # from pymongo import MongoClient
@@ -117,7 +118,8 @@ class ActionUnsubHandler(Action):
         # define default values
         return_text = "You haven't subscribed any wallets yet"
         wallet_buttons = None
-        slot_unsub_wallets_value = False
+        # when false add a followup Action
+        events = [SlotSet("slot_unsub_wallets", False), FollowupAction("utter_continue_or_exit")]
 
         if tracker.get_slot("slot_old_user"):
             # old user flow
@@ -128,10 +130,10 @@ class ActionUnsubHandler(Action):
                 wallet_buttons = [{"title": wallet , "payload": wallet} for wallet in subscribed_wallets]
                 return_text = "Please select a wallet to unsubscribe"
                 #set slot true if there are wallets to unsubscribe
-                slot_unsub_wallets_value = True
-                
+                events = [SlotSet("slot_unsub_wallets", True)]
+
         dispatcher.utter_message(text=return_text, buttons=wallet_buttons, button_type="vertical")
-        return [SlotSet("slot_unsub_wallets", slot_unsub_wallets_value)]
+        return events
     
 class ActionUnsubWallet(Action):
     """This action introduces the Bot features and provides options to carryforward conversation in terms of buttons"""
@@ -162,7 +164,7 @@ class ActionUnsubWallet(Action):
         update_wallets_for_subscription(subscription, user_id, modified_wallet_list)
 
         dispatcher.utter_message(text=f"The wallet {unsub_wallet} is removed from subscription")
-        return []
+        return [FollowupAction("utter_continue_or_exit")]
 
 # class ActionGetWalletId(Action):
 
