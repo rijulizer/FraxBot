@@ -42,7 +42,7 @@ stories:
     - requested_slot: null
   - active_loop: null
   - action: action_unsubscribe_wallet
-  - action: utter_continue_or_exit
+  # - action: utter_continue_or_exit
   # - intent: deny
   # - action: utter_goodbye
 
@@ -56,4 +56,37 @@ stories:
   - action: action_unsubscribe_handler
   - slot_was_set:
     - slot_unsub_wallets: False
+  - action: utter_continue_or_exit
+
+- story: Subscribe path affirm new wallet
+  steps:
+  - slot_was_set:
+    - slot_old_user: false
+  - intent: greet
+  - action: action_bot_intro
+  - intent: subscribe_daily_updates
+  - action: action_get_sublist
+  - intent: affirm
+  - action: utter_ask_walletid
+  - intent: wallet_id_detected
+    entities:
+    - wallet_id: '0xFFF4C40b3C3f2B6E981799f57f58b73E647de3B6'
+  - action: form_wallet_id
+  - active_loop: form_wallet_id
+  - slot_was_set:
+    - slot_wallet_id: '0xFFF4C40b3C3f2B6E981799f57f58b73E647de3B6'
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: action_subscribe_wallet
+
+- story: Subscribe path deny new wallet
+  steps:
+  - slot_was_set:
+    - slot_old_user
+  - intent: greet
+  - action: action_bot_intro
+  - intent: subscribe_daily_updates
+  - action: action_get_sublist
+  - intent: deny
   - action: utter_continue_or_exit

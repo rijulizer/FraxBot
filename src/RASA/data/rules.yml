@@ -42,4 +42,7 @@ rules:
   # - action: action_unsubscribe_wallet
   # - action: utter_continue_or_exit
 
-
+- rule: Check existing Subscribed wallets
+  steps:
+  - intent: get_list_of_existing_subscibed_wallets
+  - action: action_get_sublist

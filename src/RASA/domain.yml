@@ -50,10 +50,15 @@ responses:
   - text: Great, carry on!
   utter_goodbye:
   - text: Bye
+  utter_ask_walletid:
+  - text: Please provide the wallet
 actions:
-- utter_goodbye
-- utter_continue_or_exit
 - action_bot_intro
+- action_get_sublist
+- utter_continue_or_exit
+- action_subscribe_wallet
+- utter_ask_walletid
+- utter_goodbye
 - action_unsubscribe_handler
 - action_unsubscribe_wallet
 - action_get_data

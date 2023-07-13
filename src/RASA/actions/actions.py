@@ -21,7 +21,7 @@ from common import format_telegram_metadata, upload_channel_metadata, check_retu
 (db, telegram_metadata, subscription, pairs, wallet) = mongodb_connect()
 
 # debug
-super_user_id = 6278581239
+super_user_id = 6278581232
 
 class ActionSessionStart(Action):
     """
@@ -166,6 +166,81 @@ class ActionUnsubWallet(Action):
         dispatcher.utter_message(text=f"The wallet {unsub_wallet} is removed from subscription")
         return [FollowupAction("utter_continue_or_exit")]
 
+class ActionGetSublist(Action):
+    """This action introduces the Bot features and provides options to carryforward conversation in terms of buttons"""
+    def name(self) -> Text:
+        return "action_get_sublist"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        
+        print('\n [Action] action_get_sublist....')
+        print(" [debug] SLOTS:", tracker.slots)
+
+        # define default values
+        return_text = "You haven't subscribed any wallets yet"
+        
+        # process if only old_user as new user wont have subscribed wallets
+        if tracker.get_slot("slot_old_user"):
+            # old user flow
+            # get user id from tracker
+            user_id  = super_user_id #R tracker.sender_id
+            subscribed_wallets = get_subscribed_wallets(subscription, user_id)
+            if subscribed_wallets:
+                return_text = f"You have subscribed the following wallets - {str(subscribed_wallets)}" #TODO: Modify for better looking text
+        dispatcher.utter_message(text=return_text)
+
+        if tracker.latest_message["intent"]["name"]=="subscribe_daily_updates":
+            # if the intent is subscribe return further subscription actions
+            event =[]
+            buttons = [
+                {"title": "Yes" , "payload": "/affirm"},
+                {"title": "No", "payload": "/deny"},
+                ]
+            dispatcher.utter_message(text= "Would you like to subscibe a new wallet -", buttons=buttons)#, button_type="vertical")
+        
+        
+        else:
+            # if the intent is to just get the subscription list or anhthing else utter_continue_or_exit
+            event = [FollowupAction("utter_continue_or_exit")]
+        return event
+
+class ActionSubscribe(Action):
+    """This action introduces the Bot features and provides options to carryforward conversation in terms of buttons"""
+    def name(self) -> Text:
+        return "action_subscribe_wallet"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        
+        print('\n [Action] action_subscribe_wallet....')
+        print(" [debug] SLOTS:", tracker.slots)
+
+        # get user id from tracker
+        user_id  = super_user_id #R tracker.sender_id
+        sub_wallet = tracker.slots["slot_wallet_id"]
+        print(f" [debug] sub_wallet - {sub_wallet}")
+
+        subscribed_wallets = get_subscribed_wallets(subscription, user_id)
+        # remove the selected wallet from list of subscibed wallets
+        try:
+            modified_wallet_list = subscribed_wallets.copy()
+            modified_wallet_list.append(sub_wallet)
+        except:
+            modified_wallet_list = subscribed_wallets.copy()
+
+        print(f" [debug] modified_wallet_list - {modified_wallet_list}")
+        if subscribed_wallets:
+            # if the user has existing wallets then update the list of wallets
+            update_wallets_for_subscription(subscription, user_id, modified_wallet_list)
+        else:
+            # else add a new entry to the Subscription collection
+            add_wallets_for_subscription(subscription, user_id, modified_wallet_list)
+
+        dispatcher.utter_message(text=f"The wallet {sub_wallet} is added to your subscription list")
+        return [FollowupAction("utter_continue_or_exit")]
 # class ActionGetWalletId(Action):
 
 #     def name(self) -> Text:
