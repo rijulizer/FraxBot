@@ -1,87 +1,76 @@
-version: "3.1"
-
+version: '3.1'
+entities:
+- wallet_id
 slots:
-
-  slot_task:
-    type: text
-    mappings:
-    - type: from_intent
-      intent: get_current_wallet_status
-      value: get_current_wallet_status
-    - type: from_intent
-      intent: subscribe_daily_updates
-      value: subscribe_daily_updates
-    - type: from_intent
-      intent: get_list_of_existing_subscibed_wallets
-      value: get_list_of_existing_subscibed_wallets
-    - type: from_intent
-      intent: unsubscibe
-      value: unsubscibe
-  
   slot_old_user:
     type: bool
-    initial_value: False
+    initial_value: false
     mappings:
     - type: custom
-      action: action_session_start
-
-
+  slot_unsub_wallets:
+    type: bool
+    initial_value: false
+    influence_conversation: true
+    mappings:
+    - type: custom
+  slot_wallet_id:
+    type: text
+    mappings:
+    - type: from_entity
+      entity: wallet_id
+      conditions:
+      - active_loop: form_wallet_id
+  slot_wallet_has_position:
+    type: bool
+    initial_value: false
+    influence_conversation: true
+    mappings:
+    - type: custom
+  slot_wallet_subscribed:
+    type: bool
+    initial_value: false
+    influence_conversation: true
+    mappings:
+    - type: custom
+forms:
+  form_wallet_id:
+    required_slots:
+    - slot_wallet_id
 intents:
-  - greet
-  - affirm
-  - deny
-  - goodbye
-  - get_current_wallet_status
-  - subscribe_daily_updates
-  - get_list_of_existing_subscibed_wallets
-  - unsubscibe
-
+- affirm
+- deny
+- get_current_wallet_status
+- get_list_of_existing_subscibed_wallets
+- goodbye
+- greet
+- subscribe_daily_updates
+- unsubscribe
+- wallet_id_detected
 responses:
-  utter_greet:
-  - text: "Hey! I am the Frax-Lend Bot"
-  - text: "Hi! I am the Frax-Lend Bot"
-  - text: "Hello! I am the Frax-Lend Bot"
-
-  # utter_intro:
-  # - text: "Currently, I can help you with - \n\t• View current position \n\t• Subscribe to get daily position updates \n\t• Unsubscribe"
-  # #   buttons:
-  #   * 1. Get the current status of your positions. |
-  #   * 2. Subscribe to get daily updates about your positions. |
-  #   * 1. Get list of already subscribed wallets. |
-  #   * 1. Un-subscribe an wallet. "
-  #   buttons:
-  #   - title: "Current Positions"
-  #     payload: "/get_current_wallet_status"
-  #   - title: "Subscribe"
-  #     payload: "/subscribe_daily_updates"
-  #   - title: "view Subscriptions"
-  #     payload: "/get_list_of_existing_subscibed_wallets"
-  #   - title: "Unsubscribe"
-  #     payload: "/unsubscribe"
-
-  utter_ending:
-  - text: "Would you like to end the conversation or continue?"
+  utter_continue_or_exit:
+  - text: Would you like to end the conversation or continue?
     buttons:
-      - title: "End"
-        payload: "/deny"
-      - title: "Continue"
-        payload: "/affirm"
-
-  utter_happy:
-  - text: "Great, carry on!"
-
+    - title: End
+      payload: /deny
+    - title: Continue
+      payload: /affirm
   utter_goodbye:
-  - text: "Bye"
-
-  utter_iamabot:
-  - text: "I am a bot, powered by Rasa."
-
+  - text: Bye
+  utter_ask_walletid:
+  - text: Please provide the wallet
 actions:
-
-- action_session_start
+- action_get_position_handler
+- action_get_position
+- action_subscribe_wallet
 - action_bot_intro
+- utter_continue_or_exit
+- action_get_sublist
+- utter_ask_walletid
+- utter_goodbye
+- action_unsubscribe_handler
+- action_unsubscribe_wallet
 - action_get_data
-
+- action_session_start
 session_config:
-  session_expiration_time: 60
+  session_expiration_time: 90
   carry_over_slots_to_new_session: true

@@ -1,5 +1,4 @@
 version: "3.1"
-
 nlu:
 - intent: greet
   examples: |
@@ -18,7 +17,7 @@ nlu:
     - good afternoon
     - /start
     - start
-
+    - Hi
 - intent: goodbye
   examples: |
     - cu
@@ -31,7 +30,6 @@ nlu:
     - see you around
     - bye bye
     - see you later
-
 - intent: affirm
   examples: |
     - yes
@@ -41,7 +39,6 @@ nlu:
     - that sounds good
     - correct
     - continue
-
 - intent: deny
   examples: |
     - no
@@ -52,14 +49,12 @@ nlu:
     - no way
     - not really
     - end
-
 - intent: bot_challenge
   examples: |
     - are you a bot?
     - are you a human?
     - am I talking to a bot?
     - am I talking to a human?
-
 - intent: get_current_wallet_status
   examples: |
     - Show my current wallet satatus.
@@ -67,7 +62,8 @@ nlu:
     - my positions?
     - whats the status?
     - any updates?
-
+    - get curent status
+    - get current stastus
 - intent: subscribe_daily_updates
   examples: |
     - How to subscribe?
@@ -75,17 +71,31 @@ nlu:
     - subscribe
     - I want to get daily updates.
     - give me daily updates
-
 - intent: get_list_of_existing_subscibed_wallets
   examples: |
     - Already subscribed?
     - show my existing subscribed list.
-
-- intent: unsubscibe
+- intent: unsubscribe
   examples: |
+    - unsub
     - unsubscribe.
     - un-subscribe
     - How to unsubscribe?
     - How do I unsubscribe a wallet?
     - I want to cancel my subscription.
     - I want to end my subscription.
+- intent: wallet_id_detected
+  examples: |
+    - yes, my wallet id is [0x7308a21030ae55721707fd4717bf5f8e1b0afmad](wallet_id)
+    - sure, [0x0be55326919f08af4d14a42aafb3b68f95738355](wallet_id)
+    - yep .... [0x8be55326919f97af4d14a42aafb3b68f95701089](wallet_id)
+    - of course. [0x5be765432f08af49064a42aafb3b68f95738355](wallet_id)
+    - [0x1be35978f08af4d14a42aafb3b68f97983278](wallet_id)
+    - Hi[1c56890090kl69800924cv90](wallet_id)
+    - why not! [2n6578990uoi6578990vbew1456](wallet_id)
+    - [7z487089fgk66545jkl7](wallet_id) ... check if this works
+    - [0xFFF388e770f49a604e11f1a2084b39279492a61f](wallet_id)
+    - [0xFFF444444C3f2B6E981799f57f58b73E647de3B6](wallet_id)
+    - [0xFFF4C40b3C3f2B6E981799f57f58b73E647de3B6](wallet_id)
+    - [0xAFF4C40b3C3f2B6E981799f57f58b73E647de3B6](wallet_id)
+    - [0xBBB4C40b3C3f2B6E981799f57f58b73E647de3B6](wallet_id)
