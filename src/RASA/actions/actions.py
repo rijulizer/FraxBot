@@ -225,7 +225,9 @@ class ActionSubscribe(Action):
             add_wallets_for_subscription(subscription, user_id, modified_wallet_list)
 
         dispatcher.utter_message(text=f"The wallet {sub_wallet} is added to your subscription list")
-        return [FollowupAction("utter_continue_or_exit")]
+        # if the the wallet is subscribed set the old_user as True
+        # for new user in the same session this will be indicative that the user is not new anymore
+        return [SlotSet("slot_old_user", True), FollowupAction("utter_continue_or_exit")]
 
 class ActionGetPositionHandler(Action):
 
@@ -236,7 +238,7 @@ class ActionGetPositionHandler(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         
-        print('\n [Action] action_subscribe_wallet....')
+        print('\n [Action] action_get_position_handler....')
         print(" [debug] SLOTS:", tracker.slots)
         print(" [debug] Latest Intent:", tracker.latest_message["intent"]["name"])
 
@@ -265,7 +267,7 @@ class ActionGetPosition(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         
-        print('\n [Action] action_subscribe_wallet....')
+        print('\n [Action] action_get_position....')
         print(" [debug] SLOTS:", tracker.slots)
         print(" [debug] Latest Intent:", tracker.latest_message["intent"]["name"])
 
@@ -308,9 +310,9 @@ class ActionGetPosition(Action):
             dispatcher.utter_message(text= "Would you like to try another wallet -", buttons=buttons)
             # listen_event = ActionExecuted("action_listen")
         
-        events = [SlotSet("slot_wallet_has_position",slot_wallet_has_position), SlotSet("slot_wallet_subscribed",slot_wallet_subscribed)]
-        if listen_event:
-            events.append(listen_event)
+        events = [SlotSet("slot_wallet_has_position", slot_wallet_has_position), SlotSet("slot_wallet_subscribed",slot_wallet_subscribed)]
+        # if listen_event:
+        #     events.append(listen_event)
         return events
 
 

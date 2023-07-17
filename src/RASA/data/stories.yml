@@ -2,25 +2,6 @@ version: "3.1"
 
 stories:
 
-# - story: introduction
-#   steps:
-#   - intent: greet
-#   - action: utter_greet
-#   - action: utter_intro
-#   - intent: affirm
-#   - action: utter_ending
-#   - intent: deny
-#   - action: utter_goodbye
-
-# - story: debug_intro
-#   steps:
-#   - intent: greet
-#   - action: action_bot_intro
-#   - intent: affirm
-#   - action: utter_continue_or_exit
-#   - intent: deny
-#   - action: utter_goodbye
-
 - story: Unsubscribe complete path
   steps:
   # - slot_was_set:
@@ -85,18 +66,18 @@ stories:
 
 - story: Get wallet position path- 1, valid wallet + wallet subscribed
   steps:
-  # - intent: get_current_wallet_status
-  # - action: action_get_position_handler
-  # - intent: wallet_id_detected
-  #   entities:
-  #   - wallet_id: '0xAFF4C40b3C3f2B6E981799f57f58b73E647de3B6'
-  # - action: form_wallet_id
-  # - active_loop: form_wallet_id
-  # - slot_was_set:
-  #   - slot_wallet_id: '0xAFF4C40b3C3f2B6E981799f57f58b73E647de3B6'
-  # - slot_was_set:
-  #   - requested_slot: null
-  # - active_loop: null
+  - intent: get_current_wallet_status
+  - action: action_get_position_handler
+  - intent: wallet_id_detected
+    entities:
+    - wallet_id: '0xAFF4C40b3C3f2B6E981799f57f58b73E647de3B6'
+  - action: form_wallet_id
+  - active_loop: form_wallet_id
+  - slot_was_set:
+    - slot_wallet_id: '0xAFF4C40b3C3f2B6E981799f57f58b73E647de3B6'
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
   - action: action_get_position
   - slot_was_set:
     - slot_wallet_has_position: true
@@ -106,18 +87,18 @@ stories:
 
 - story: Get wallet position path- 2.1, valid wallet + wallet NOT subscribed + user wants to subscribe
   steps:
-  # - intent: get_current_wallet_status
-  # - action: action_get_position_handler
-  # - intent: wallet_id_detected
-  #   entities:
-  #   - wallet_id: '0xBBB4C40b3C3f2B6E981799f57f58b73E647de3B6'
-  # - action: form_wallet_id
-  # - active_loop: form_wallet_id
-  # - slot_was_set:
-  #   - slot_wallet_id: '0xBBB4C40b3C3f2B6E981799f57f58b73E647de3B6'
-  # - slot_was_set:
-  #   - requested_slot: null
-  # - active_loop: null
+  - intent: get_current_wallet_status
+  - action: action_get_position_handler
+  - intent: wallet_id_detected
+    entities:
+    - wallet_id: '0xBBB4C40b3C3f2B6E981799f57f58b73E647de3B6'
+  - action: form_wallet_id
+  - active_loop: form_wallet_id
+  - slot_was_set:
+    - slot_wallet_id: '0xBBB4C40b3C3f2B6E981799f57f58b73E647de3B6'
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
   - action: action_get_position
   - slot_was_set:
     - slot_wallet_has_position: true
@@ -128,18 +109,18 @@ stories:
 
 - story: Get wallet position path- 2.2, valid wallet + wallet NOT subscribed + user NOT wants to subscribe
   steps:
-  # - intent: get_current_wallet_status
-  # - action: action_get_position_handler
-  # - intent: wallet_id_detected
-  #   entities:
-  #   - wallet_id: '0xBBB4C40b3C3f2B6E981799f57f58b73E647de3B6'
-  # - action: form_wallet_id
-  # - active_loop: form_wallet_id
-  # - slot_was_set:
-  #   - slot_wallet_id: '0xBBB4C40b3C3f2B6E981799f57f58b73E647de3B6'
-  # - slot_was_set:
-  #   - requested_slot: null
-  # - active_loop: null
+  - intent: get_current_wallet_status
+  - action: action_get_position_handler
+  - intent: wallet_id_detected
+    entities:
+    - wallet_id: '0xBBB4C40b3C3f2B6E981799f57f58b73E647de3B6'
+  - action: form_wallet_id
+  - active_loop: form_wallet_id
+  - slot_was_set:
+    - slot_wallet_id: '0xBBB4C40b3C3f2B6E981799f57f58b73E647de3B6'
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
   - action: action_get_position
   - slot_was_set:
     - slot_wallet_has_position: true
@@ -150,18 +131,18 @@ stories:
 
 - story: Get wallet position path- 3.1, NOT valid wallet + user try new wallet
   steps:
-  # - intent: get_current_wallet_status
-  # - action: action_get_position_handler
-  # - intent: wallet_id_detected
-  #   entities:
-  #   - wallet_id: '0xCCC4C40b3C3f2B6E981799f57f58b73E647de3B6'
-  # - action: form_wallet_id
-  # - active_loop: form_wallet_id
-  # - slot_was_set:
-  #   - slot_wallet_id: '0xCCC4C40b3C3f2B6E981799f57f58b73E647de3B6'
-  # - slot_was_set:
-  #   - requested_slot: null
-  # - active_loop: null
+  - intent: get_current_wallet_status
+  - action: action_get_position_handler
+  - intent: wallet_id_detected
+    entities:
+    - wallet_id: '0xCCC4C40b3C3f2B6E981799f57f58b73E647de3B6'
+  - action: form_wallet_id
+  - active_loop: form_wallet_id
+  - slot_was_set:
+    - slot_wallet_id: '0xCCC4C40b3C3f2B6E981799f57f58b73E647de3B6'
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
   - action: action_get_position
   - slot_was_set:
     - slot_wallet_has_position: false
@@ -172,18 +153,18 @@ stories:
 
 - story: Get wallet position path- 3.2, NOT valid wallet + user NOT try new wallet
   steps:
-  # - intent: get_current_wallet_status
-  # - action: action_get_position_handler
-  # - intent: wallet_id_detected
-  #   entities:
-  #   - wallet_id: '0xCCC4C40b3C3f2B6E981799f57f58b73E647de3B6'
-  # - action: form_wallet_id
-  # - active_loop: form_wallet_id
-  # - slot_was_set:
-  #   - slot_wallet_id: '0xCCC4C40b3C3f2B6E981799f57f58b73E647de3B6'
-  # - slot_was_set:
-  #   - requested_slot: null
-  # - active_loop: null
+  - intent: get_current_wallet_status
+  - action: action_get_position_handler
+  - intent: wallet_id_detected
+    entities:
+    - wallet_id: '0xCCC4C40b3C3f2B6E981799f57f58b73E647de3B6'
+  - action: form_wallet_id
+  - active_loop: form_wallet_id
+  - slot_was_set:
+    - slot_wallet_id: '0xCCC4C40b3C3f2B6E981799f57f58b73E647de3B6'
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
   - action: action_get_position
   - slot_was_set:
     - slot_wallet_has_position: false

@@ -138,7 +138,7 @@ def get_wallet_position(collection_db, wallet_id: str):
     """
     sub_dict = collection_db.find_one({"wallet_id": wallet_id})
     if sub_dict:
-        wallet_position = sub_dict["data"]
+        wallet_position = sub_dict
         return wallet_position
     else:
         return None
