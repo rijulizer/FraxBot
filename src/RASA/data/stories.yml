@@ -12,32 +12,32 @@ stories:
 #   - intent: deny
 #   - action: utter_goodbye
 
-- story: debug_intro
-  steps:
-  - intent: greet
-  - action: action_bot_intro
-  - intent: affirm
-  - action: utter_continue_or_exit
-  - intent: deny
-  - action: utter_goodbye
+# - story: debug_intro
+#   steps:
+#   - intent: greet
+#   - action: action_bot_intro
+#   - intent: affirm
+#   - action: utter_continue_or_exit
+#   - intent: deny
+#   - action: utter_goodbye
 
 - story: Unsubscribe complete path
   steps:
-  - slot_was_set:
-    - slot_old_user: True
-  - intent: greet
-  - action: action_bot_intro
+  # - slot_was_set:
+  #   - slot_old_user: True
+  # - intent: greet
+  # - action: action_bot_intro
   - intent: unsubscribe
   - action: action_unsubscribe_handler
   - slot_was_set:
     - slot_unsub_wallets: True
   - intent: wallet_id_detected
     entities:
-    - wallet_id: '0xFFF444444C3f2B6E981799f57f58b73E647de3B6'
+    - wallet_id
   - action: form_wallet_id
   - active_loop: form_wallet_id
   - slot_was_set:
-    - slot_wallet_id: '0xFFF444444C3f2B6E981799f57f58b73E647de3B6'
+    - slot_wallet_id
   - slot_was_set:
     - requested_slot: null
   - active_loop: null
@@ -48,10 +48,10 @@ stories:
 
 - story: Unsubscribe incomplete path
   steps:
-  - slot_was_set:
-    - slot_old_user
-  - intent: greet
-  - action: action_bot_intro
+  # - slot_was_set:
+  #   - slot_old_user
+  # - intent: greet
+  # - action: action_bot_intro
   - intent: unsubscribe
   - action: action_unsubscribe_handler
   - slot_was_set:
@@ -60,21 +60,17 @@ stories:
 
 - story: Subscribe path affirm new wallet
   steps:
-  - slot_was_set:
-    - slot_old_user: false
-  - intent: greet
-  - action: action_bot_intro
   - intent: subscribe_daily_updates
   - action: action_get_sublist
   - intent: affirm
   - action: utter_ask_walletid
   - intent: wallet_id_detected
     entities:
-    - wallet_id: '0xFFF4C40b3C3f2B6E981799f57f58b73E647de3B6'
+    - wallet_id
   - action: form_wallet_id
   - active_loop: form_wallet_id
   - slot_was_set:
-    - slot_wallet_id: '0xFFF4C40b3C3f2B6E981799f57f58b73E647de3B6'
+    - slot_wallet_id
   - slot_was_set:
     - requested_slot: null
   - active_loop: null
@@ -82,11 +78,116 @@ stories:
 
 - story: Subscribe path deny new wallet
   steps:
-  - slot_was_set:
-    - slot_old_user
-  - intent: greet
-  - action: action_bot_intro
   - intent: subscribe_daily_updates
   - action: action_get_sublist
   - intent: deny
   - action: utter_continue_or_exit
+
+- story: Get wallet position path- 1, valid wallet + wallet subscribed
+  steps:
+  # - intent: get_current_wallet_status
+  # - action: action_get_position_handler
+  # - intent: wallet_id_detected
+  #   entities:
+  #   - wallet_id: '0xAFF4C40b3C3f2B6E981799f57f58b73E647de3B6'
+  # - action: form_wallet_id
+  # - active_loop: form_wallet_id
+  # - slot_was_set:
+  #   - slot_wallet_id: '0xAFF4C40b3C3f2B6E981799f57f58b73E647de3B6'
+  # - slot_was_set:
+  #   - requested_slot: null
+  # - active_loop: null
+  - action: action_get_position
+  - slot_was_set:
+    - slot_wallet_has_position: true
+  - slot_was_set:
+    - slot_wallet_subscribed: true
+  - action: utter_continue_or_exit
+
+- story: Get wallet position path- 2.1, valid wallet + wallet NOT subscribed + user wants to subscribe
+  steps:
+  # - intent: get_current_wallet_status
+  # - action: action_get_position_handler
+  # - intent: wallet_id_detected
+  #   entities:
+  #   - wallet_id: '0xBBB4C40b3C3f2B6E981799f57f58b73E647de3B6'
+  # - action: form_wallet_id
+  # - active_loop: form_wallet_id
+  # - slot_was_set:
+  #   - slot_wallet_id: '0xBBB4C40b3C3f2B6E981799f57f58b73E647de3B6'
+  # - slot_was_set:
+  #   - requested_slot: null
+  # - active_loop: null
+  - action: action_get_position
+  - slot_was_set:
+    - slot_wallet_has_position: true
+  - slot_was_set:
+    - slot_wallet_subscribed: false
+  - intent: affirm
+  - action: action_subscribe_wallet
+
+- story: Get wallet position path- 2.2, valid wallet + wallet NOT subscribed + user NOT wants to subscribe
+  steps:
+  # - intent: get_current_wallet_status
+  # - action: action_get_position_handler
+  # - intent: wallet_id_detected
+  #   entities:
+  #   - wallet_id: '0xBBB4C40b3C3f2B6E981799f57f58b73E647de3B6'
+  # - action: form_wallet_id
+  # - active_loop: form_wallet_id
+  # - slot_was_set:
+  #   - slot_wallet_id: '0xBBB4C40b3C3f2B6E981799f57f58b73E647de3B6'
+  # - slot_was_set:
+  #   - requested_slot: null
+  # - active_loop: null
+  - action: action_get_position
+  - slot_was_set:
+    - slot_wallet_has_position: true
+  - slot_was_set:
+    - slot_wallet_subscribed: false
+  - intent: deny
+  - action: utter_continue_or_exit 
+
+- story: Get wallet position path- 3.1, NOT valid wallet + user try new wallet
+  steps:
+  # - intent: get_current_wallet_status
+  # - action: action_get_position_handler
+  # - intent: wallet_id_detected
+  #   entities:
+  #   - wallet_id: '0xCCC4C40b3C3f2B6E981799f57f58b73E647de3B6'
+  # - action: form_wallet_id
+  # - active_loop: form_wallet_id
+  # - slot_was_set:
+  #   - slot_wallet_id: '0xCCC4C40b3C3f2B6E981799f57f58b73E647de3B6'
+  # - slot_was_set:
+  #   - requested_slot: null
+  # - active_loop: null
+  - action: action_get_position
+  - slot_was_set:
+    - slot_wallet_has_position: false
+  - slot_was_set:
+    - slot_wallet_subscribed
+  - intent: affirm
+  - action: action_get_position_handler 
+
+- story: Get wallet position path- 3.2, NOT valid wallet + user NOT try new wallet
+  steps:
+  # - intent: get_current_wallet_status
+  # - action: action_get_position_handler
+  # - intent: wallet_id_detected
+  #   entities:
+  #   - wallet_id: '0xCCC4C40b3C3f2B6E981799f57f58b73E647de3B6'
+  # - action: form_wallet_id
+  # - active_loop: form_wallet_id
+  # - slot_was_set:
+  #   - slot_wallet_id: '0xCCC4C40b3C3f2B6E981799f57f58b73E647de3B6'
+  # - slot_was_set:
+  #   - requested_slot: null
+  # - active_loop: null
+  - action: action_get_position
+  - slot_was_set:
+    - slot_wallet_has_position: false
+  - slot_was_set:
+    - slot_wallet_subscribed
+  - intent: deny
+  - action: utter_continue_or_exit 

@@ -125,10 +125,21 @@ def check_returning_user(collection_db, user_id: int):
     """
     Get the wallets subscribed by an user_id
     """
+    returning_user = False
     sub_dict = collection_db.find_one({"user_id": user_id})
     if sub_dict:
         returning_user = True
 
-    else:
-        returning_user = False
     return returning_user
+
+def get_wallet_position(collection_db, wallet_id: str):
+    """
+    Get the wallet position for a wallet id
+    """
+    sub_dict = collection_db.find_one({"wallet_id": wallet_id})
+    if sub_dict:
+        wallet_position = sub_dict["data"]
+        return wallet_position
+    else:
+        return None
+

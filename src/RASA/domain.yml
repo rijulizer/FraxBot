@@ -20,6 +20,18 @@ slots:
       entity: wallet_id
       conditions:
       - active_loop: form_wallet_id
+  slot_wallet_has_position:
+    type: bool
+    initial_value: false
+    influence_conversation: true
+    mappings:
+    - type: custom
+  slot_wallet_subscribed:
+    type: bool
+    initial_value: false
+    influence_conversation: true
+    mappings:
+    - type: custom
 forms:
   form_wallet_id:
     required_slots:
@@ -35,10 +47,6 @@ intents:
 - unsubscribe
 - wallet_id_detected
 responses:
-  utter_greet:
-  - text: Hey! I am the Frax-Lend Bot
-  - text: Hi! I am the Frax-Lend Bot
-  - text: Hello! I am the Frax-Lend Bot
   utter_continue_or_exit:
   - text: Would you like to end the conversation or continue?
     buttons:
@@ -46,17 +54,17 @@ responses:
       payload: /deny
     - title: Continue
       payload: /affirm
-  utter_happy:
-  - text: Great, carry on!
   utter_goodbye:
   - text: Bye
   utter_ask_walletid:
   - text: Please provide the wallet
 actions:
-- action_bot_intro
-- action_get_sublist
-- utter_continue_or_exit
+- action_get_position_handler
+- action_get_position
 - action_subscribe_wallet
+- action_bot_intro
+- utter_continue_or_exit
+- action_get_sublist
 - utter_ask_walletid
 - utter_goodbye
 - action_unsubscribe_handler

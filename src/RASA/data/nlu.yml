@@ -62,6 +62,8 @@ nlu:
     - my positions?
     - whats the status?
     - any updates?
+    - get curent status
+    - get current stastus
 - intent: subscribe_daily_updates
   examples: |
     - How to subscribe?
@@ -95,3 +97,5 @@ nlu:
     - [0xFFF388e770f49a604e11f1a2084b39279492a61f](wallet_id)
     - [0xFFF444444C3f2B6E981799f57f58b73E647de3B6](wallet_id)
     - [0xFFF4C40b3C3f2B6E981799f57f58b73E647de3B6](wallet_id)
+    - [0xAFF4C40b3C3f2B6E981799f57f58b73E647de3B6](wallet_id)
+    - [0xBBB4C40b3C3f2B6E981799f57f58b73E647de3B6](wallet_id)

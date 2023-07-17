@@ -23,7 +23,7 @@ def mongodb_connect():
     db = client[config['mongo_db']['database']]
     pairs = db[config['mongo_db']['pairs_schema']]
     telegram_metadata = db[config['mongo_db']['telegram_metadata_schema']]
-    wallet = db[config['mongo_db']['wallets_schema']]
+    wallet_positions = db[config['mongo_db']['wallets_schema']]
     subscription = db[config['mongo_db']['subscription_schema']]
     
-    return (db, telegram_metadata, subscription, pairs, wallet)
+    return (db, telegram_metadata, subscription, pairs, wallet_positions)

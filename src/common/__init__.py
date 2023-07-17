@@ -1,2 +1,2 @@
 from .mongodb_connection import mongodb_connect
-from .querydb_actions import get_subscribed_wallets, add_wallets_for_subscription, update_wallets_for_subscription, format_telegram_metadata, upload_channel_metadata, check_returning_user
+from .querydb_actions import get_subscribed_wallets, add_wallets_for_subscription, update_wallets_for_subscription, format_telegram_metadata, upload_channel_metadata, check_returning_user, get_wallet_position
