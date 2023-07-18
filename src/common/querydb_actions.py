@@ -144,6 +144,7 @@ def check_returning_user(collection_db, user_id: int):
 #         return None
 
 def get_wallet_position(collection_db, wallet_id: str):
+
     print("Trying to fetch wallet position...")
 
     res = collection_db.find_one({'wallet_id': wallet_id})
@@ -154,5 +155,6 @@ def get_wallet_position(collection_db, wallet_id: str):
 
     position_values = f'''Wallet Id:  {res["wallet_id"]},\n\nCollateral Symbol:  {res["collateral_symbol"]},\n\nCollateral Name:  {res["collateral_name"]},\n\nBorrowed Asset Share:  {res["borrowedAssetShare"]},\n\nDeposited Collateral Amount:  {res["depositedCollateralAmount"]},\n\nLent Asset Share:  {res["lentAssetShare"]}\n
     '''
+
 
     return position_values

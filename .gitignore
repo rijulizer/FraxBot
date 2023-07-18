@@ -164,4 +164,4 @@ cython_debug/
 /src/RASA/.rasa/cache/*
 
 *.pem
-/src/config.yml
+/src/common_config.yml
