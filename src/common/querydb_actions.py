@@ -6,7 +6,7 @@ import os
 import numpy as np
 import pandas as pd
 
-def get_subscribed_wallets(collection_db, user_id: int):
+def get_subscribed_wallets(collection_db, user_id: str):
     """
     Get the wallets subscribed by an user_id
     """
@@ -25,7 +25,7 @@ def add_wallets_for_subscription(collection_db, user_id: int, new_wallets: list)
     #update subscription
     collection_db.insert_one(
         {
-        "user_id": user_id,
+        "user_id": int(user_id),
         "wallets": new_wallets
         }
         )
@@ -35,7 +35,7 @@ def update_wallets_for_subscription(collection_db, user_id: int, new_wallets: li
 
     #update subscription
     collection_db.update_one(
-        {"user_id": user_id},
+        {"user_id": int(user_id)},
         {"$set":{"wallets": new_wallets}}
         )
     return None
@@ -132,14 +132,29 @@ def check_returning_user(collection_db, user_id: int):
 
     return returning_user
 
-def get_wallet_position(collection_db, wallet_id: str):
-    """
-    Get the wallet position for a wallet id
-    """
-    sub_dict = collection_db.find_one({"wallet_id": wallet_id})
-    if sub_dict:
-        wallet_position = sub_dict
-        return wallet_position
-    else:
-        return None
+# def get_wallet_position(collection_db, wallet_id: str):
+#     """
+#     Get the wallet position for a wallet id
+#     """
+#     sub_dict = collection_db.find_one({"wallet_id": wallet_id})
+#     if sub_dict:
+#         wallet_position = sub_dict["data"]
+#         return wallet_position
+#     else:
+#         return None
 
+def get_wallet_position(collection_db, wallet_id: str):
+
+    print("Trying to fetch wallet position...")
+
+    res = collection_db.find_one({'wallet_id': wallet_id})
+
+    print(f'\n\nResult: {res}\n\n')
+
+    # doc_id = str(res[-1]['_id'])
+
+    position_values = f'''Wallet Id:  {res["wallet_id"]},\n\nCollateral Symbol:  {res["collateral_symbol"]},\n\nCollateral Name:  {res["collateral_name"]},\n\nBorrowed Asset Share:  {res["borrowedAssetShare"]},\n\nDeposited Collateral Amount:  {res["depositedCollateralAmount"]},\n\nLent Asset Share:  {res["lentAssetShare"]}\n
+    '''
+
+
+    return position_values
