@@ -21,7 +21,7 @@ from common import get_wallet_position
 (db, telegram_metadata, subscription, pairs, wallet_positions) = mongodb_connect()
 
 # debug
-super_user_id = 6278581232
+super_user_id = None#"6278581231" # must be a string
 
 class ActionSessionStart(Action):
     """
@@ -39,7 +39,11 @@ class ActionSessionStart(Action):
         print(" [debug] SLOTS:", tracker.slots)
         
         # check DB if the user is a returning user 
-        user_id  = super_user_id #R tracker.sender_id
+        if tracker.sender_id: #for debugging and development
+            user_id  = str(tracker.sender_id) 
+        else:
+            user_id = super_user_id
+
         if user_id:
             returning_user = check_returning_user(telegram_metadata, user_id)
         else: 
@@ -106,7 +110,10 @@ class ActionUnsubHandler(Action):
         if tracker.get_slot("slot_old_user"):
             # old user flow
             # get user id from tracke
-            user_id  = super_user_id #R tracker.sender_id
+            if tracker.sender_id: #for debugging and development
+                user_id  = str(tracker.sender_id) 
+            else:
+                user_id = super_user_id
             subscribed_wallets = get_subscribed_wallets(subscription, user_id)
             if subscribed_wallets:
                 wallet_buttons = [{"title": wallet , "payload": wallet} for wallet in subscribed_wallets]
@@ -131,7 +138,10 @@ class ActionUnsubWallet(Action):
         print(" [debug] Latest Intent:", tracker.latest_message["intent"]["name"])
 
         # get user id from tracker
-        user_id  = super_user_id #R tracker.sender_id
+        if tracker.sender_id: #for debugging and development
+            user_id  = str(tracker.sender_id) 
+        else:
+            user_id = super_user_id
         unsub_wallet = tracker.slots["slot_wallet_id"]
         print(f" [debug] unsub_wallet - {unsub_wallet}")
 
@@ -169,7 +179,11 @@ class ActionGetSublist(Action):
         if tracker.get_slot("slot_old_user"):
             # old user flow
             # get user id from tracker
-            user_id  = super_user_id #R tracker.sender_id
+            if tracker.sender_id: #for debugging and development
+                user_id  = str(tracker.sender_id) 
+            else:
+                user_id = super_user_id
+
             subscribed_wallets = get_subscribed_wallets(subscription, user_id)
             if subscribed_wallets:
                 return_text = f"You have subscribed the following wallets - {str(subscribed_wallets)}" #TODO: Modify for better looking text
@@ -204,7 +218,11 @@ class ActionSubscribe(Action):
         print(" [debug] Latest Intent:", tracker.latest_message["intent"]["name"])
 
         # get user id from tracker
-        user_id  = super_user_id #R tracker.sender_id
+        if tracker.sender_id: #for debugging and development
+            user_id  = str(tracker.sender_id) 
+        else:
+            user_id = super_user_id
+
         sub_wallet = tracker.slots["slot_wallet_id"]
         print(f" [debug] sub_wallet - {sub_wallet}")
 
@@ -245,7 +263,11 @@ class ActionGetPositionHandler(Action):
         #  for new users or users who dont have subscribed wallets - 
         wallet_buttons = None
         return_text = "Please type a new wallet to get the current positions"
-        user_id  = super_user_id #R tracker.sender_id
+        if tracker.sender_id: #for debugging and development
+            user_id  = str(tracker.sender_id) 
+        else:
+            user_id = super_user_id
+
         subscribed_wallets = get_subscribed_wallets(subscription, user_id)
     
         if tracker.get_slot("slot_old_user") and subscribed_wallets:
@@ -272,7 +294,10 @@ class ActionGetPosition(Action):
         print(" [debug] Latest Intent:", tracker.latest_message["intent"]["name"])
 
         # get user id from tracker
-        user_id  = super_user_id #R tracker.sender_id
+        if tracker.sender_id: #for debugging and development
+            user_id  = str(tracker.sender_id) 
+        else:
+            user_id = super_user_id
         position_wallet = tracker.slots["slot_wallet_id"]
         print(f" [debug] position_wallet - {position_wallet}")
         # TODO: Implement get_wallet_position():

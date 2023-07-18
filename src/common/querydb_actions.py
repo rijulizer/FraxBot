@@ -20,22 +20,22 @@ def get_subscribed_wallets(collection_db, user_id: str):
         wallets = []
     return wallets
 
-def add_wallets_for_subscription(collection_db, user_id: int, new_wallets: list):
+def add_wallets_for_subscription(collection_db, user_id: str, new_wallets: list):
 
     #update subscription
     collection_db.insert_one(
         {
-        "user_id": int(user_id),
+        "user_id": user_id,
         "wallets": new_wallets
         }
         )
     return None
 
-def update_wallets_for_subscription(collection_db, user_id: int, new_wallets: list):
+def update_wallets_for_subscription(collection_db, user_id: str, new_wallets: list):
 
     #update subscription
     collection_db.update_one(
-        {"user_id": int(user_id)},
+        {"user_id": user_id},
         {"$set":{"wallets": new_wallets}}
         )
     return None
@@ -83,7 +83,7 @@ def format_telegram_metadata(result):
                 message_id = result['message']['message_id']
             if 'from' in result['message'].keys():
                 if 'id' in result['message']['from'].keys():
-                    user_id = result['message']['from']['id']
+                    user_id = str(result['message']['from']['id'])
                 if 'is_bot' in result['message']['from'].keys():
                     is_bot = result['message']['from']['is_bot']
                 if 'first_name' in result['message']['from'].keys():
@@ -121,7 +121,7 @@ def upload_channel_metadata(collection_db, metadata):
     print("[MongoDB] Metadata uploaded...")
     return
 
-def check_returning_user(collection_db, user_id: int):
+def check_returning_user(collection_db, user_id: str):
     """
     Get the wallets subscribed by an user_id
     """
@@ -146,15 +146,18 @@ def check_returning_user(collection_db, user_id: int):
 def get_wallet_position(collection_db, wallet_id: str):
 
     print("Trying to fetch wallet position...")
-
+    
     res = collection_db.find_one({'wallet_id': wallet_id})
-
-    print(f'\n\nResult: {res}\n\n')
-
-    # doc_id = str(res[-1]['_id'])
-
-    position_values = f'''Wallet Id:  {res["wallet_id"]},\n\nCollateral Symbol:  {res["collateral_symbol"]},\n\nCollateral Name:  {res["collateral_name"]},\n\nBorrowed Asset Share:  {res["borrowedAssetShare"]},\n\nDeposited Collateral Amount:  {res["depositedCollateralAmount"]},\n\nLent Asset Share:  {res["lentAssetShare"]}\n
-    '''
-
-
+    if res:
+        print(f'\nResult: {res}\n')
+        # doc_id = str(res[-1]['_id'])
+        position_values = f'''Wallet Id:  {res["wallet_id"]},
+        \nCollateral Symbol:  {res["collateral_symbol"]},
+        \nCollateral Name:  {res["collateral_name"]},
+        \nBorrowed Asset Share:  {res["borrowedAssetShare"]},
+        \nDeposited Collateral Amount:  {res["depositedCollateralAmount"]},
+        \nLent Asset Share:  {res["lentAssetShare"]}\n
+        '''
+    else:
+        position_values = None
     return position_values

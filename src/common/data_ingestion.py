@@ -2,7 +2,7 @@ import requests
 from pprint import pprint
 from pymongo import MongoClient
 from time import sleep
-from apscheduler.schedulers.background import BackgroundScheduler, BlockingScheduler
+# from apscheduler.schedulers.background import BackgroundScheduler, BlockingScheduler
 import yaml
 from mongodb_connection import mongodb_connect
 import schedule

@@ -2,7 +2,7 @@ import requests
 from pprint import pprint
 from pymongo import MongoClient
 from time import sleep
-from apscheduler.schedulers.background import BackgroundScheduler, BlockingScheduler
+# from apscheduler.schedulers.background import BackgroundScheduler, BlockingScheduler
 import yaml
 # from database_connection import connect
 from telethon.sync import TelegramClient#, events
@@ -24,11 +24,11 @@ URL = "https://api.telegram.org/bot{}/".format(BOT_TOKEN)
 
 
 
-client = TelegramClient(session_name, API_ID, API_HASH).start(bot_token=BOT_TOKEN)
+# client = TelegramClient(session_name, API_ID, API_HASH).start(bot_token=BOT_TOKEN)
 
 
 def send_notification():
-    with client:
+    with TelegramClient(session_name, API_ID, API_HASH).start(bot_token=BOT_TOKEN) as client :
         # Send a message to your bot
         query = subscription.find()
         for q in query:

@@ -1,17 +1,20 @@
 ---
- api_key:
-   etherscan: 'JN2CRXQSWFZ56NZTCYEKVU6BVXBRRCGUDS' 
-   etherscan_pro:  'XEFYBSG1FXGMN8AC8HUYQSS53SFQVQ731B'
-   cryptocompare:  'dd77ed8832647a2add4f4f35c0b309aa67a2c0db34193c12b5c01b25519f943b'
- azure_sql_db:
-   username:  'frax_riju'
-   password:  'NicolaTesla*90' 
- mongo_db:
-   uri:  "mongodb+srv://cluster0.elkeivq.mongodb.net/?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority"
-   database: "FraxBot_db"
-   wallets_schema: "wallet_positions"
-   subscription_schema: "subscription_wallets"
-   pairs_schema: "pairs"
-   telegram_metadata_schema: "telegram_metadata"
-   
+  api_key:
+    etherscan: 'JN2CRXQSWFZ56NZTCYEKVU6BVXBRRCGUDS' 
+    etherscan_pro:  'XEFYBSG1FXGMN8AC8HUYQSS53SFQVQ731B'
+    cryptocompare:  'dd77ed8832647a2add4f4f35c0b309aa67a2c0db34193c12b5c01b25519f943b'
+  azure_sql_db:
+    username:  'frax_riju'
+    password:  'NicolaTesla*90' 
+  mongo_db:
+    uri:  "mongodb+srv://cluster0.elkeivq.mongodb.net/?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority"
+    database: "FraxBot_db"
+    wallets_schema: "wallet_positions"
+    subscription_schema: "subscription_wallets"
+    pairs_schema: "pairs"
+    telegram_metadata_schema: "telegram_metadata"
+  telegram:
+    api_id:
+    api_hash:
+    bot_token: "6003841289:AAEXfisLLGCTaxWJgtgLQy6mgPxl3H3JeKI"
    
