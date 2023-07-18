@@ -49,6 +49,8 @@ nlu:
     - no way
     - not really
     - end
+    - dont think so
+    - nope
 - intent: bot_challenge
   examples: |
     - are you a bot?
@@ -64,6 +66,10 @@ nlu:
     - any updates?
     - get curent status
     - get current stastus
+    - I want to see positions for my wallet
+    - show positions
+    - show wallet
+    - give me some information
 - intent: subscribe_daily_updates
   examples: |
     - How to subscribe?
@@ -71,10 +77,23 @@ nlu:
     - subscribe
     - I want to get daily updates.
     - give me daily updates
+    - could you send me notifications for 
+    - I would like to get updates for
+    - send notifications
+    - send updates
+    - get me subscription
 - intent: get_list_of_existing_subscibed_wallets
   examples: |
     - Already subscribed?
     - show my existing subscribed list.
+    - what are my wallets
+    - show my wallet list
+    - am I subscribed to any wallets
+    - will I get notified for
+    - am I getting notifications for any wallet
+    - show me my subscription list
+    - subscribed wallet list
+    - subscriptions? 
 - intent: unsubscribe
   examples: |
     - unsub
@@ -84,6 +103,14 @@ nlu:
     - How do I unsubscribe a wallet?
     - I want to cancel my subscription.
     - I want to end my subscription.
+    - cancel my subscription
+    - dont send notifications
+    - stop sending notifications
+    - stop giving updates
+    - I dont need updates
+    - dont send updates
+    - no more notifications
+    - no more updates
 - intent: wallet_id_detected
   examples: |
     - yes, my wallet id is [0x7308a21030ae55721707fd4717bf5f8e1b0afmad](wallet_id)
@@ -91,7 +118,7 @@ nlu:
     - yep .... [0x8be55326919f97af4d14a42aafb3b68f95701089](wallet_id)
     - of course. [0x5be765432f08af49064a42aafb3b68f95738355](wallet_id)
     - [0x1be35978f08af4d14a42aafb3b68f97983278](wallet_id)
-    - Hi[1c56890090kl69800924cv90](wallet_id)
+    - Hi [1c56890090kl69800924cv90](wallet_id)
     - why not! [2n6578990uoi6578990vbew1456](wallet_id)
     - [7z487089fgk66545jkl7](wallet_id) ... check if this works
     - [0xFFF388e770f49a604e11f1a2084b39279492a61f](wallet_id)
@@ -99,3 +126,4 @@ nlu:
     - [0xFFF4C40b3C3f2B6E981799f57f58b73E647de3B6](wallet_id)
     - [0xAFF4C40b3C3f2B6E981799f57f58b73E647de3B6](wallet_id)
     - [0xBBB4C40b3C3f2B6E981799f57f58b73E647de3B6](wallet_id)
+

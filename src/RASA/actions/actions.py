@@ -1,5 +1,6 @@
 import sys
-sys.path.append('d:\\FRAX_project\\FraxBot\\src\\')
+# import os
+sys.path.append(r'D:\Telegram_Bot(dummy)\Rasa_enhancements_3\FraxBot\src')
 # sys.path
 
 from typing import Any, Text, Dict, List
@@ -88,6 +89,34 @@ class ActionBotIntro(Action):
             dispatcher.utter_message(text= u"Great! What should we do next? \n\t• View the current status of your positions \n\t• Subscribe to get daily updates about your positions \n\t• Get list of already subscribed wallets \n\t• Un-subscribe an wallet" , buttons=buttons, button_type="vertical")
         return []
 
+class ActionDefaultFallback(Action):
+    """This action introduces the Bot features and provides options to carryforward conversation in terms of buttons"""
+    def name(self) -> Text:
+        return "action_default_fallback"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        
+        print('\n [Action] fallback action....')
+        print(" [debug] SLOTS:", tracker.slots)
+        print(" [debug] Latest Intent:", tracker.latest_message["intent"]["name"])
+
+        buttons = [{"title": "Current Positions" , "payload": "/get_current_wallet_status"},
+                   {"title": "Subscribe", "payload": "/subscribe_daily_updates"},
+                   {"title": "View Subscriptions", "payload": "/get_list_of_existing_subscibed_wallets"},
+                   {"title": "Unsubscribe","payload": "/unsubscribe"},
+                   {"title": "Exit", "payload": "/goodbye"}]
+
+        dispatcher.utter_message(text= u'''Sorry I could not understand your request!\n
+        Currently I can help you with the following -
+        \t• View the current status of your positions
+        \t• Subscribe to get daily updates about your positions
+        \t• Get list of already subscribed wallets
+        \t• Un-subscribe an wallet''', buttons=buttons, button_type="vertical")
+        
+        return []
+    
 class ActionUnsubHandler(Action):
     """This action introduces the Bot features and provides options to carryforward conversation in terms of buttons"""
     def name(self) -> Text:
@@ -186,7 +215,8 @@ class ActionGetSublist(Action):
 
             subscribed_wallets = get_subscribed_wallets(subscription, user_id)
             if subscribed_wallets:
-                return_text = f"You have subscribed the following wallets - {str(subscribed_wallets)}" #TODO: Modify for better looking text
+                sub_list_str = "\n".join(subscribed_wallets)
+                return_text = f"You have subscribed the following wallets -\n {sub_list_str}" #TODO: Modify for better looking text
         dispatcher.utter_message(text=return_text)
 
         if tracker.latest_message["intent"]["name"]=="subscribe_daily_updates":
@@ -227,12 +257,14 @@ class ActionSubscribe(Action):
         print(f" [debug] sub_wallet - {sub_wallet}")
 
         subscribed_wallets = get_subscribed_wallets(subscription, user_id)
-        # remove the selected wallet from list of subscibed wallets
+        # Append the selected wallet to the list of subscibed wallets
         try:
             modified_wallet_list = subscribed_wallets.copy()
             modified_wallet_list.append(sub_wallet)
+            modified_wallet_list = list(set(modified_wallet_list))
         except:
             modified_wallet_list = subscribed_wallets.copy()
+            modified_wallet_list = list(set(modified_wallet_list))
 
         print(f" [debug] modified_wallet_list - {modified_wallet_list}")
         if subscribed_wallets:
