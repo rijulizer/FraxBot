@@ -79,7 +79,12 @@ python notification_sender.py
         * **api_hash**: *API hash of your registered Telegram application*        
         * **bot_token**: *Bot token, obtained from Bot Father*
 
+### Generating API id and hash for Telegram Application
+1. Log in to your Telegram core: https://my.telegram.org.
+2. Go to "API development tools" and fill out the form (Ensure that you are providing a few lines for description. In place of URL, you can add ```https://api.telegram.org/bot{bot_token}/``` or choose to leave it blank)
+3. After submitting the form, you will get basic addresses as well as the **api_id** and **api_hash** parameters required for user authorization.
 
+*Note: For the moment each number can only have one api_id connected to it.*
 
 ## Folder structure
 
