@@ -235,7 +235,11 @@ class DataIngestion:
         for user_pos in data_users_positions:
             notif_user_pos = {}
             # add user to new dict
-            notif_user_pos = {'wallet_id': user_pos['id']}
+            notif_user_pos = {'wallet_id': user_pos['id'],
+                              'hlink_etherscanner': f"https://etherscan.io/address/{user_pos['id']}",
+                              'hlink_fraxfacts': f"https://facts.frax.finance/fraxlend/users/{user_pos['id']}"
+            }
+            
 
             # iterate over the different positions
             notif_postions = [] 
@@ -310,6 +314,7 @@ class DataIngestion:
                         notif_postions.append(notif_pos)
                         
             notif_user_pos['positions'] = notif_postions
+
             data_notifications.append(notif_user_pos)
         # TODO: modify data update logic for each user-positions
         print("Running MongoDB operations on user_notifications_collection...")

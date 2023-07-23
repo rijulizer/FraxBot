@@ -135,18 +135,38 @@ def check_returning_user(collection_db, user_id: str):
 def get_wallet_position(collection_db, wallet_id: str):
 
     print("Trying to fetch wallet position...")
-    
+    # get information for each wallet id
     res = collection_db.find_one({'wallet_id': wallet_id})
     if res:
-        print(f'\nResult: {res}\n')
-        # doc_id = str(res[-1]['_id'])
-        position_values = f'''Wallet Id:  {res["wallet_id"]},
-        \nCollateral Symbol:  {res["collateral_symbol"]},
-        \nCollateral Name:  {res["collateral_name"]},
-        \nBorrowed Asset Share:  {res["borrowedAssetShare"]},
-        \nDeposited Collateral Amount:  {res["depositedCollateralAmount"]},
-        \nLent Asset Share:  {res["lentAssetShare"]}\n
-        '''
+        str_position_values = []
+        if res['positions']:
+            # position_values = """"""
+            str_position_values.append(f"This wallet- {wallet_id} has {len(res['positions'])} valid position(s) - ")
+            for pos in res['positions']:
+                str_position_values.append(f'''\n
+Pair Id:  {pos["pair_id"]},
+Pair Symbol:  {pos["pair_symbol"]},
+Exchange Rate:  {pos["pair_ex_rate"]} FRAX,
+Borrow APR:  {pos["pair_borrow_APR"]} %,
+Lend APR:  {pos["pair_lend_APR"]} %,
+Borrwed Amount:  {pos["user_borrow_amt_scaled"]} FRAX,
+Deposited Collateral:  {pos["user_dep_col_amt_scaled"]} {pos["collateral_symbol"]},
+Lent Amount:  {pos["user_lent_amt_scaled"]} FRAX,
+Current LTV:  {pos["user_current_LTV"]} %,
+Liquidation Price:  {pos["user_liquidation_price_scaled"]} FRAX,
+Last Updated on: {pos["pos_datetime"]}
+    ''')
+        else:
+            str_position_values.append(f"This wallet - {wallet_id} has no valid positions.\n")
+
+        str_hyper_links = f"""\nFor more information, visit-
+etherscan - {res['hlink_etherscanner']}
+facts-frax-finance - {res['hlink_fraxfacts']}
+"""
+        str_position_values.append(str_hyper_links)
+
+
     else:
-        position_values = None
-    return position_values
+        str_position_values = None
+    return str_position_values
+
