@@ -103,7 +103,7 @@ def format_telegram_metadata(result):
     return(flag_data_none,
         {
             "message_id" : message_id,
-            "user_id" : user_id, 
+            "user_id" : str(user_id), 
             "update_id" : update_id, 
             "is_bot" : is_bot, 
             "first_name" : first_name, 
@@ -131,17 +131,6 @@ def check_returning_user(collection_db, user_id: str):
         returning_user = True
 
     return returning_user
-
-# def get_wallet_position(collection_db, wallet_id: str):
-#     """
-#     Get the wallet position for a wallet id
-#     """
-#     sub_dict = collection_db.find_one({"wallet_id": wallet_id})
-#     if sub_dict:
-#         wallet_position = sub_dict["data"]
-#         return wallet_position
-#     else:
-#         return None
 
 def get_wallet_position(collection_db, wallet_id: str):
 

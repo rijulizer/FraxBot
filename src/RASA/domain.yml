@@ -46,6 +46,7 @@ intents:
 - subscribe_daily_updates
 - unsubscribe
 - wallet_id_detected
+- nlu_fallback
 responses:
   utter_continue_or_exit:
   - text: Would you like to end the conversation or continue?
@@ -58,6 +59,8 @@ responses:
   - text: Bye
   utter_ask_walletid:
   - text: Please provide the wallet
+  utter_default:
+  - text: Sorry I didn't get that. Can you rephrase?
 actions:
 - action_get_position_handler
 - action_get_position
@@ -71,6 +74,9 @@ actions:
 - action_unsubscribe_wallet
 - action_get_data
 - action_session_start
+# - action_fallback
+- utter_default
+# - action_default_fallback
 session_config:
   session_expiration_time: 90
   carry_over_slots_to_new_session: true

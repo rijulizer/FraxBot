@@ -128,18 +128,16 @@ if __name__ == '__main__':
 
         (db, telegram_metadata, subscription, pairs, wallet) = mongodb_connect()
 
-        # scheduler = BlockingScheduler()
-        # scheduler.add_job(segregate_data, 'interval', seconds = int(config['scheduler']['interval']), args = [query])
-        # scheduler.start()
+        # wallet.delete_many({})
+        # time.sleep(5)
 
-        # schedule.every(10).seconds.do(send_notification)
-        # segregate_data(query)
-        s = schedule.every().day.at("13:50", "America/New_York").do(segregate_data, query = query)
+        s = schedule.every(60*60).seconds.do(segregate_data, query = query)
+        # s = schedule.every().day.at("13:50", "America/New_York").do(segregate_data, query = query)
         print("\n",s.next_run)
         # Start an infinite loop to run the scheduler
         while True:
             schedule.run_pending()
-            time.sleep(1000)
+            time.sleep(200)
 
     except Exception as error:
         print('Cause: {}'.format(error))
