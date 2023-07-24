@@ -4,7 +4,7 @@ from pymongo import MongoClient
 from time import sleep
 # from apscheduler.schedulers.background import BackgroundScheduler, BlockingScheduler
 import yaml
-# from database_connection import connect
+# from data.database_connection import connect
 from telethon.sync import TelegramClient#, events
 import time
 from mongodb_connection import mongodb_connect
@@ -12,6 +12,8 @@ import schedule
 from querydb_actions import get_wallet_position
 import os
 from datetime import datetime
+
+print("Inside notification_sender.py...")
 
 (db, pairs, user_positions, user_notifications, telegram_metadata, subscription) = mongodb_connect()
 
@@ -33,6 +35,7 @@ client = TelegramClient(session_name, API_ID, API_HASH).start(bot_token=BOT_TOKE
 
 
 def send_notification():
+    print("Inside send_notification() ...")
     with client :
         # Send a message to your bot
         query = subscription.find()
@@ -48,21 +51,4 @@ def send_notification():
                 msg_user_notif = get_wallet_position(user_notifications, wallet_id)
                 for msg in msg_user_notif:
                     client.send_message(user_id, msg)
-                # except:
-                #     print("Error in sending notification... ")
-
-if __name__=="__main__":
-    send_notification()
-
-    # # Schedule the notification to be sent every day at a specific time
-    # # s = schedule.every(60*30).seconds.do(send_notification)
-    # s = schedule.every(20).seconds.do(send_notification)
-
-    # # s = schedule.every().day.at("08:00:00", "America/New_York").do(send_notification)
-    # print("\n",s.next_run)
-
-    # # Start an infinite loop to run the scheduler
-    # while True:
-    #     schedule.run_pending()
-    #     time.sleep(2)
-    #     # time.sleep(200)
+    return

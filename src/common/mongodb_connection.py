@@ -28,3 +28,14 @@ def mongodb_connect():
     subscription = db[config['mongo_db']['subscription_schema']]
     
     return (db, pairs, user_positions, user_notifications, telegram_metadata, subscription)
+
+if __name__ == '__main__':
+    # try:
+        # print("Initializing Data Ingestion \n...")
+#         # connect MDB collectioons
+    (db, pairs, user_positions, user_notifications, telegram_metadata, subscription) = mongodb_connect()
+#         # manually run 
+        # data_ingest = DataIngestion()
+
+    # except Exception as error:
+        # print("An exception occurred:", type(error).__name__)
