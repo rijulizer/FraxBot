@@ -7,17 +7,20 @@ import yaml
 # from data.database_connection import connect
 from telethon.sync import TelegramClient#, events
 import time
-from mongodb_connection import mongodb_connect
 import schedule
-from querydb_actions import get_wallet_position
 import os
 from datetime import datetime
 
+from common import get_wallet_position, mongodb_connect
+
 print("Inside notification_sender.py...")
 
+# python_path = r"D:\Telegram_Bot(dummy)\Rasa_enhancements_final\FraxBot\src"
+python_path = os.environ.get('PYTHONPATH')
 (db, pairs, user_positions, user_notifications, telegram_metadata, subscription) = mongodb_connect()
-
-config_stream = open("../common_config.yml",'r')
+print(python_path+os.sep+"common_config.yml")
+config_stream = open(python_path+os.sep+"common_config.yml",'r')
+# config_stream = open("../common_config.yml",'r')
 config = yaml.load(config_stream, Loader=yaml.BaseLoader)
 
 API_ID = config['telegram']['api_id']
@@ -48,7 +51,12 @@ def send_notification():
             for wallet_id in wallets:
                 # try:
                 # get the listy of messages to display
-                msg_user_notif = get_wallet_position(user_notifications, wallet_id)
+                msg_user_notif = get_wallet_position(user_notifications, wallet_id,"notification")
                 for msg in msg_user_notif:
-                    client.send_message(user_id, msg)
+                    client.send_message(user_id, msg,parse_mode='html')
     return
+
+if __name__ == '__main__':
+
+    (db, pairs, user_positions, user_notifications, telegram_metadata, subscription) = mongodb_connect()
+    send_notification()

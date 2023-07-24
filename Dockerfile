@@ -13,13 +13,14 @@ COPY ./src ./src
 COPY ./mongodb_user_certificate.pem ./mongodb_user_certificate.pem
 COPY ./requirements.txt /app/requirements.txt
 
-ENV PYTHONPATH=/app:/src
+ENV PYTHONPATH=/app/src
 
 # Start the app using serve command
 RUN python -m venv /opt/venv
 # Enable venv
 ENV PATH="/opt/venv/bin:$PATH"
 
+RUN pip install --upgrade pip
 RUN pip install -Ur requirements.txt
 
 CMD [ "python", "/app/src/common/scheduler_module.py" ]

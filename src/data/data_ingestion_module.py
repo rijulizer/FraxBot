@@ -1,6 +1,6 @@
 import sys
 # sys.path.append('d:\\FRAX_project\\FraxBot\\src\\')
-sys.path.append(r'D:\Telegram_Bot(dummy)\Rasa_enhancements_final\FraxBot\src')
+# sys.path.append(r'D:\Telegram_Bot(dummy)\Rasa_enhancements_final\FraxBot\src')
 
 import requests
 from pprint import pprint
@@ -13,9 +13,10 @@ import yaml
 import schedule
 import numpy as np
 import pandas as pd
-
+import os
 from common import mongodb_connect
 
+python_path = os.environ.get('PYTHONPATH')
 
 def datetime_from_timestamp(timestamp):
     try:
