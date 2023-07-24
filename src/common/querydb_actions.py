@@ -6,7 +6,7 @@ import os
 import numpy as np
 import pandas as pd
 
-def get_subscribed_wallets(collection_db, user_id: int):
+def get_subscribed_wallets(collection_db, user_id: str):
     """
     Get the wallets subscribed by an user_id
     """
@@ -20,7 +20,7 @@ def get_subscribed_wallets(collection_db, user_id: int):
         wallets = []
     return wallets
 
-def add_wallets_for_subscription(collection_db, user_id: int, new_wallets: list):
+def add_wallets_for_subscription(collection_db, user_id: str, new_wallets: list):
 
     #update subscription
     collection_db.insert_one(
@@ -31,7 +31,7 @@ def add_wallets_for_subscription(collection_db, user_id: int, new_wallets: list)
         )
     return None
 
-def update_wallets_for_subscription(collection_db, user_id: int, new_wallets: list):
+def update_wallets_for_subscription(collection_db, user_id: str, new_wallets: list):
 
     #update subscription
     collection_db.update_one(
@@ -83,7 +83,7 @@ def format_telegram_metadata(result):
                 message_id = result['message']['message_id']
             if 'from' in result['message'].keys():
                 if 'id' in result['message']['from'].keys():
-                    user_id = result['message']['from']['id']
+                    user_id = str(result['message']['from']['id'])
                 if 'is_bot' in result['message']['from'].keys():
                     is_bot = result['message']['from']['is_bot']
                 if 'first_name' in result['message']['from'].keys():
@@ -103,7 +103,7 @@ def format_telegram_metadata(result):
     return(flag_data_none,
         {
             "message_id" : message_id,
-            "user_id" : user_id, 
+            "user_id" : str(user_id), 
             "update_id" : update_id, 
             "is_bot" : is_bot, 
             "first_name" : first_name, 
@@ -121,7 +121,7 @@ def upload_channel_metadata(collection_db, metadata):
     print("[MongoDB] Metadata uploaded...")
     return
 
-def check_returning_user(collection_db, user_id: int):
+def check_returning_user(collection_db, user_id: str):
     """
     Get the wallets subscribed by an user_id
     """
@@ -133,13 +133,40 @@ def check_returning_user(collection_db, user_id: int):
     return returning_user
 
 def get_wallet_position(collection_db, wallet_id: str):
-    """
-    Get the wallet position for a wallet id
-    """
-    sub_dict = collection_db.find_one({"wallet_id": wallet_id})
-    if sub_dict:
-        wallet_position = sub_dict
-        return wallet_position
+
+    print("Trying to fetch wallet position...")
+    # get information for each wallet id
+    res = collection_db.find_one({'wallet_id': wallet_id})
+    if res:
+        str_position_values = []
+        if res['positions']:
+            # position_values = """"""
+            str_position_values.append(f"This wallet- {wallet_id} has {len(res['positions'])} valid position(s) - ")
+            for pos in res['positions']:
+                str_position_values.append(f'''\n
+Pair Id:  {pos["pair_id"]},
+Pair Symbol:  {pos["pair_symbol"]},
+Exchange Rate:  {pos["pair_ex_rate"]} FRAX,
+Borrow APR:  {pos["pair_borrow_APR"]} %,
+Lend APR:  {pos["pair_lend_APR"]} %,
+Borrwed Amount:  {pos["user_borrow_amt_scaled"]} FRAX,
+Deposited Collateral:  {pos["user_dep_col_amt_scaled"]} {pos["collateral_symbol"]},
+Lent Amount:  {pos["user_lent_amt_scaled"]} FRAX,
+Current LTV:  {pos["user_current_LTV"]} %,
+Liquidation Price:  {pos["user_liquidation_price_scaled"]} FRAX,
+Last Updated on: {pos["pos_datetime"]}
+    ''')
+        else:
+            str_position_values.append(f"This wallet - {wallet_id} has no valid positions.\n")
+
+        str_hyper_links = f"""\nFor more information, visit-
+etherscan - {res['hlink_etherscanner']}
+facts-frax-finance - {res['hlink_fraxfacts']}
+"""
+        str_position_values.append(str_hyper_links)
+
+
     else:
-        return None
+        str_position_values = None
+    return str_position_values
 

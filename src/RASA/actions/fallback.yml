@@ -1,0 +1,5 @@
+version: "3.1"
+
+actions:
+- action_default_fallback:
+    - utter_default

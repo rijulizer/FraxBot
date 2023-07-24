@@ -146,8 +146,8 @@ stories:
   - action: action_get_position
   - slot_was_set:
     - slot_wallet_has_position: false
-  - slot_was_set:
-    - slot_wallet_subscribed
+  # - slot_was_set:
+  #   - slot_wallet_subscribed
   - intent: affirm
   - action: action_get_position_handler 
 
@@ -168,7 +168,7 @@ stories:
   - action: action_get_position
   - slot_was_set:
     - slot_wallet_has_position: false
-  - slot_was_set:
-    - slot_wallet_subscribed
+  # - slot_was_set:
+  #   - slot_wallet_subscribed
   - intent: deny
   - action: utter_continue_or_exit 
