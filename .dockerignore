@@ -1,0 +1,7 @@
+node_modules
+/src/common/test_mongodb_connections.ipynb
+/src/RASA
+/src/common/test_notification_sender.ipynb
+/src/common/test_query_db_actions.ipynb
+/src/data/test_data_ingestion_module.ipynb
+/src/data/test_data_ingestion.ipynb

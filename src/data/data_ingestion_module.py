@@ -1,5 +1,6 @@
 import sys
-sys.path.append('d:\\FRAX_project\\FraxBot\\src\\')
+# sys.path.append('d:\\FRAX_project\\FraxBot\\src\\')
+sys.path.append(r'D:\Telegram_Bot(dummy)\Rasa_enhancements_final\FraxBot\src')
 
 import requests
 from pprint import pprint
@@ -327,19 +328,8 @@ class DataIngestion:
 if __name__ == '__main__':
     try:
         print("Initializing Data Ingestion \n...")
-        # connect MDB collectioons
-        (db, pairs, user_positions, user_notifications, telegram_metadata, subscription) = mongodb_connect()
-        # manually run 
+
         data_ingest = DataIngestion()
-        # # schedule
-        # # schedule.every(10).seconds.do(send_notification)
-        # # segregate_data(query)
-        # s = schedule.every().day.at("13:50", "America/New_York").do(DataIngestion)
-        # print("\n",s.next_run)
-        # # Start an infinite loop to run the scheduler
-        # while True:
-        #     schedule.run_pending()
-        #     time.sleep(1000)
 
     except Exception as error:
         print("An exception occurred:", type(error).__name__)
