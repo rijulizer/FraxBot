@@ -3,6 +3,7 @@ from pymongo import MongoClient
 import yaml
 import os
 python_path = os.environ.get('PYTHONPATH')
+mongo_certificate_path = os.environ.get('MONGO_CERTIFICATE_PATH')
 # python_path = r"D:\Telegram_Bot(dummy)\Rasa_enhancements_final\FraxBot\src"
 def mongodb_connect():
     """Connects to mongodb atlas and returns different collections"""
@@ -17,7 +18,7 @@ def mongodb_connect():
     print("Connecting to MongoDB Client...")
     client = MongoClient(mongoDb_uri,
                         tls=True,
-                        tlsCertificateKeyFile=os.getcwd()+os.sep+"mongodb_user_certificate.pem")
+                        tlsCertificateKeyFile=mongo_certificate_path+os.sep+"mongodb_user_certificate.pem")
                         # os.getcwd()+os.sep+"mongodb_user_certificate.pem")
 
     print("Getting data collections...")
