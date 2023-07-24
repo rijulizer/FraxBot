@@ -52,3 +52,12 @@ policies:
   core_fallback_threshold: 0.5
   core_fallback_action_name: "action_default_fallback"
   enable_fallback_prediction: True
+
+# config.yml
+# channels:
+#   custom_html:
+#     custom_html_output.CustomHTMLOutput
+
+channels:
+  custom_html:
+    output_channels.custom_html_output.CustomHTMLOutput

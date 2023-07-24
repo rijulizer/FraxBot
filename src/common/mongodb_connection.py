@@ -2,13 +2,14 @@ import pymongo
 from pymongo import MongoClient
 import yaml
 import os
-
+python_path = os.environ.get('PYTHONPATH')
+# python_path = r"D:\Telegram_Bot(dummy)\Rasa_enhancements_final\FraxBot\src"
 def mongodb_connect():
     """Connects to mongodb atlas and returns different collections"""
 
     print("Initializing configurations...")
     # Load config file
-    config_stream = open("../common_config.yml",'r')
+    config_stream = open(python_path+os.sep+"common_config.yml",'r')
     config = yaml.load(config_stream, Loader=yaml.BaseLoader)
 
     mongoDb_uri = config['mongo_db']['uri']
@@ -16,7 +17,8 @@ def mongodb_connect():
     print("Connecting to MongoDB Client...")
     client = MongoClient(mongoDb_uri,
                         tls=True,
-                        tlsCertificateKeyFile="../../mongodb_user_certificate.pem")
+                        tlsCertificateKeyFile=os.getcwd()+os.sep+"mongodb_user_certificate.pem")
+                        # os.getcwd()+os.sep+"mongodb_user_certificate.pem")
 
     print("Getting data collections...")
 

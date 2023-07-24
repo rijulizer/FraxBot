@@ -1,7 +1,7 @@
 import sys
 
 # sys.path.append('d:\\FRAX_project\\FraxBot\\src\\')
-sys.path.append(r'D:\Telegram_Bot(dummy)\Rasa_enhancements_final\FraxBot\src')
+# sys.path.append(r'D:\Telegram_Bot(dummy)\Rasa_enhancements_final\FraxBot\src')
 
 import os
 import schedule
@@ -12,6 +12,8 @@ from datetime import datetime,timedelta
 
 from data import DataIngestion
 from common import mongodb_connect, send_notification
+python_path = os.environ.get('PYTHONPATH')
+
 
 def time_conversion(scheduler_time):
     '''Function to convert UTC time to time mentioned in common_config according to time zone '''
@@ -42,11 +44,13 @@ def time_conversion(scheduler_time):
 
 if __name__=="__main__":
     #Read config time and time zone
-    config_stream = open("../common_config.yml",'r')
+    config_stream = open(python_path+os.sep+"common_config.yml",'r')
     config = yaml.load(config_stream, Loader=yaml.BaseLoader)
 
     scheduler_time = config['scheduler']['time']
     scheduler_time_zone = config['scheduler']['time_zone']
+    scheduler_time = os.environ.get('SCHEDULER_TIME', scheduler_time)
+    scheduler_time_zone = os.environ.get('SCHEDULER_TIME_ZONE', scheduler_time_zone)
     try:
         print("Calling main function in scheduler module...")
         

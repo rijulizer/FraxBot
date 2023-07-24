@@ -1,6 +1,6 @@
 import sys
 # import os
-sys.path.append(r'D:\Telegram_Bot(dummy)\Rasa_enhancements_3\FraxBot\src')
+sys.path.append(r'D:\Telegram_Bot(dummy)\Rasa_enhancements_final\FraxBot\src')
 # sys.path
 
 from typing import Any, Text, Dict, List
@@ -19,7 +19,7 @@ from common import get_subscribed_wallets, add_wallets_for_subscription, update_
 from common import format_telegram_metadata, upload_channel_metadata, check_returning_user
 from common import get_wallet_position
 # get monogdb collections
-(db, telegram_metadata, subscription, pairs, wallet_positions) = mongodb_connect()
+(db, pairs, user_positions, user_notifications, telegram_metadata, subscription) = mongodb_connect()
 
 # debug
 super_user_id = None#"6278581231" # must be a string
@@ -333,7 +333,7 @@ class ActionGetPosition(Action):
         position_wallet = tracker.slots["slot_wallet_id"]
         print(f" [debug] position_wallet - {position_wallet}")
         # TODO: Implement get_wallet_position():
-        position_data = get_wallet_position(wallet_positions, position_wallet)
+        position_data = get_wallet_position(user_notifications, position_wallet,"notification")
         subscribed_wallets = get_subscribed_wallets(subscription, user_id)
         slot_wallet_has_position = False
         slot_wallet_subscribed = False
@@ -346,10 +346,16 @@ class ActionGetPosition(Action):
             if position_wallet in subscribed_wallets:
                 # the wallet not in database
                 slot_wallet_subscribed = True
-                dispatcher.utter_message(text= f"Here is your current wallet positions - {str(position_data)}")
+                # dispatcher.utter_message(text= f"Here is your current wallet positions - {str(position_data)}")
+                dispatcher.utter_message(text=f"Your wallet has {len(position_data)} positions.")
+                for msg in position_data:
+                    dispatcher.utter_message(msg,output_channel="custom_html")
                 listen_event = None 
             else:
-                dispatcher.utter_message(text= f"Here is your current wallet positions - {str(position_data)}")
+                # dispatcher.utter_message(text= f"Here is your current wallet positions - {str(position_data)}")
+                dispatcher.utter_message(text=f"Your wallet has {len(position_data)} positions.")
+                for msg in position_data:
+                    dispatcher.utter_message(msg, output_channel="custom_html")
                 buttons = [
                     {"title": "Yes" , "payload": "/affirm"},
                     {"title": "No", "payload": "/deny"},
