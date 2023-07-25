@@ -1,7 +1,3 @@
-node_modules
-
-/src/RASA
-
 /src/data/test_data_ingestion_module.ipynb
 /src/data/test_data_ingestion.ipynb
 /src/data/data_ingestion_old.py

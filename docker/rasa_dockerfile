@@ -1,22 +1,28 @@
 # Start your image with a node base image
-FROM python:3.9.7-slim
+FROM rasa/rasa:3.6.0
 
 # The /app directory should act as the main application directory
 WORKDIR /app
-
+USER root
 # Copy local directories to the current local directory of our docker image (/app)
 COPY ./src ./src
 COPY ./mongodb_user_certificate.pem ./mongodb_user_certificate.pem
 COPY ./requirements-dev.txt /app/requirements-dev.txt
 
 ENV PYTHONPATH=/app/src
-ENV MONGO_CERTIFICATE_PATH=/app
 
+# Start the app using serve command
 RUN python -m venv /opt/venv
 # Enable venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 RUN pip install --upgrade pip
 RUN pip install -Ur requirements-dev.txt
+# Train model, If data remains same this will be skipped automatically.
+RUN rasa train
 
-CMD [ "python", "/app/src/common/scheduler_module.py" ]
+VOLUME /app
+VOLUME /app/data
+VOLUME /app/models
+
+CMD ["run","-m","/app/models","--enable-api","--cors","*","--debug" ,"--endpoints", "docker_endpoints.yml", "--credential", "credentials.yml", "--log-file", "out.log", "--debug"]
