@@ -1,0 +1,27 @@
+# Start your image with a node base image
+FROM rasa/rasa-sdk:3.6.0
+# The /app directory should act as the main application directory
+WORKDIR /app
+
+# Copy local directories to the current local directory of our docker image (/app)
+COPY ./src ./src
+COPY ./mongodb_user_certificate.pem ./mongodb_user_certificate.pem
+COPY ./requirements-dev.txt /app/requirements-dev.txt
+USER root
+
+ENV PYTHONPATH=/app/src
+
+RUN python -m venv /opt/venv
+# Enable venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+RUN pip install --upgrade pip
+RUN pip install -Ur requirements.txt
+
+EXPOSE 5055
+USER 1001
+# CMD [ "python", "/app/src/common/scheduler_module.py" ]
+
+#pass arguments
+#docker entrypoint
+#add py path in docker file
