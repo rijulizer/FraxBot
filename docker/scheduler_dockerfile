@@ -17,6 +17,6 @@ RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 RUN pip install --upgrade pip
-RUN pip install -Ur requirements-dev.txt
+RUN pip install -Ur /app/requirements-dev.txt
 
 CMD [ "python", "/app/src/common/scheduler_module.py" ]

@@ -1,0 +1,12 @@
+/home/fraxbot_admin/projects/FraxBot/src/RASA
+/home/fraxbot_admin/projects/FraxBot/src/data/data_ingestion_old.py
+/home/fraxbot_admin/projects/FraxBot/src/data/query_subgraph.ipynb
+/home/fraxbot_admin/projects/FraxBot/src/data/test_data_ingestion_module.ipynb
+/home/fraxbot_admin/projects/FraxBot/src/data/test_data_ingestion.ipynb
+
+/home/fraxbot_admin/projects/FraxBot/src/common/notification_sender_old.py
+/home/fraxbot_admin/projects/FraxBot/src/common/notification_sender.py
+/home/fraxbot_admin/projects/FraxBot/src/common/scheduler_module.py
+/home/fraxbot_admin/projects/FraxBot/src/common/test_mongodb_connections.ipynb
+/home/fraxbot_admin/projects/FraxBot/src/common/test_notification_sender.ipynb
+/home/fraxbot_admin/projects/FraxBot/src/common/test_query_db_actions.ipynb

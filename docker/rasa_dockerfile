@@ -5,11 +5,11 @@ FROM rasa/rasa:3.6.0
 WORKDIR /app
 USER root
 # Copy local directories to the current local directory of our docker image (/app)
-COPY ./src ./src
-COPY ./mongodb_user_certificate.pem ./mongodb_user_certificate.pem
-COPY ./requirements-dev.txt /app/requirements-dev.txt
+COPY . /app
 
+# declare python paths
 ENV PYTHONPATH=/app/src
+ENV MONGO_CERTIFICATE_PATH=/app
 
 # Start the app using serve command
 RUN python -m venv /opt/venv
@@ -18,11 +18,21 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 RUN pip install --upgrade pip
 RUN pip install -Ur requirements-dev.txt
+
+# change directory to RASA
+WORKDIR /app/src/RASA
 # Train model, If data remains same this will be skipped automatically.
-RUN rasa train
+ARG TRAIN
 
-VOLUME /app
-VOLUME /app/data
-VOLUME /app/models
+RUN if [ "$TRAIN" = "true" ] ; then \
+    rasa train; \
+fi
+# RUN rasa train
 
-CMD ["run","-m","/app/models","--enable-api","--cors","*","--debug" ,"--endpoints", "docker_endpoints.yml", "--credential", "credentials.yml", "--log-file", "out.log", "--debug"]
+# VOLUME /app
+# VOLUME /app/data
+VOLUME /app/src/RASA/models
+
+ 
+CMD ["run","-m","models","--enable-api","--cors","*","--endpoints", "docker_endpoints.yml", "--credential", "credentials.yml", "--log-file", "rasa_out.log"]
+EXPOSE 5005

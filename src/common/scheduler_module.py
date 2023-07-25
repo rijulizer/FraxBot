@@ -47,20 +47,26 @@ if __name__=="__main__":
     config_stream = open(python_path+os.sep+"common_config.yml",'r')
     config = yaml.load(config_stream, Loader=yaml.BaseLoader)
 
-    scheduler_time = config['scheduler']['time']
-    scheduler_time_zone = config['scheduler']['time_zone']
-    scheduler_time = os.environ.get('SCHEDULER_TIME', scheduler_time)
+    scheduler_time = config['scheduler']['notification']['time']
+    scheduler_time_zone = config['scheduler']['notification']['time_zone']
+    scheduler_time_interval = int(config['scheduler']['data_ingestion']['time_interval'])
+    
+    scheduler_time = os.environ.get('SCHEDULER_NOTIFICATION_TIME', scheduler_time)
     scheduler_time_zone = os.environ.get('SCHEDULER_TIME_ZONE', scheduler_time_zone)
+    time_interval = int(os.environ.get('SCHEDULER_TIME_INTERVAL', scheduler_time_interval))
     try:
         print("Calling main function in scheduler module...")
         
         #Function to convert UTC time to time mentioned in common_config according to time zone
-        data_ingestion_time = time_conversion(scheduler_time)
-        print("Data ingestion time: ",data_ingestion_time)#.strftime("%H:%M"))
-        notification_time = data_ingestion_time+timedelta(minutes=30) #make customisable
+        # data_ingestion_time = time_conversion(scheduler_time)
+        # print("Data ingestion time: ",data_ingestion_time)#.strftime("%H:%M"))
+        # notification_time = data_ingestion_time +timedelta(minutes=30) #make customisable
+        s1 = schedule.every(scheduler_time_interval).minutes.do(DataIngestion)
+
+        notification_time = time_conversion(scheduler_time)
         print("Notification time: ",notification_time)
         
-        s1 = schedule.every().day.at(data_ingestion_time.strftime("%H:%M:%S"), scheduler_time_zone).do(DataIngestion)
+        # s1 = schedule.every().day.at(data_ingestion_time.strftime("%H:%M:%S"), scheduler_time_zone).do(DataIngestion)
 
         print("="*50)
 
