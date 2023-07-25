@@ -56,7 +56,7 @@ responses:
     - title: Continue
       payload: /affirm
   utter_goodbye:
-  - text: Bye
+  - text: Bye \U0001F44B See you again soon!
   utter_ask_walletid:
   - text: Please provide the wallet
   utter_default:

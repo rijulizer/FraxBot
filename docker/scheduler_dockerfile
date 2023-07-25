@@ -3,13 +3,15 @@ FROM python:3.9.7-slim
 
 # The /app directory should act as the main application directory
 WORKDIR /app
+
 # Copy local directories to the current local directory of our docker image (/app)
 COPY ./src ./src
 COPY ./mongodb_user_certificate.pem ./mongodb_user_certificate.pem
 COPY ./requirements-dev.txt /app/requirements-dev.txt
 
 ENV PYTHONPATH=/app/src
-# Create environment
+ENV MONGO_CERTIFICATE_PATH=/app
+
 RUN python -m venv /opt/venv
 # Enable venv
 ENV PATH="/opt/venv/bin:$PATH"

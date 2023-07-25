@@ -147,14 +147,14 @@ def get_wallet_position(collection_db, wallet_id: str, flag: str):
         str_position_values = []
         if res['positions']:
             # position_values = """"""
-            str_position_values.append(f"This wallet- {wallet_id} has {len(res['positions'])} valid position(s) - ")
+            str_position_values.append(f"This wallet- {wallet_id} has {len(res['positions'])} valid position(s).")
             for pos in res['positions']:
                 if flag=="notification":
                     opening_tag = "<b>"
                     closing_tag = "</b>"
                 else:
-                    opening_tag="\033[1m"
-                    closing_tag="\033[0m"
+                    opening_tag=""
+                    closing_tag=""
                 str_position_values.append(f'''\n
 •  {opening_tag}Pair Id{closing_tag}:  {pos["pair_id"]},
 •  {opening_tag}Pair Symbol{closing_tag}:  {pos["pair_symbol"]},
@@ -182,8 +182,8 @@ def get_wallet_position(collection_db, wallet_id: str, flag: str):
 """
         else:
             str_hyper_links = f"""\nFor more information, visit-
-{convert2hyperlink("etherscan",res['hlink_etherscanner'])}
-{convert2hyperlink("facts-frax-finance",res['hlink_fraxfacts'])}
+etherscan - {res['hlink_etherscanner']}
+facts-frax-finance - {res['hlink_fraxfacts']}
 """
         str_position_values.append(str_hyper_links)
 
