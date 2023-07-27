@@ -283,17 +283,22 @@ class DataIngestion:
                             total_b_amt_per_share = int(pdf_pair_info["dailyHistory_totalBorrowAmount"].values[0])/int(pdf_pair_info["dailyHistory_totalBorrowShare"].values[0])
                             # borrow_amount =((borrowedAssetShare/10** pair_asset_decimal) * (totalBorrowAmount/totalBorrowShare)) # Unit FRAX
                             user_borrow_amt_scaled = round((int(pos["borrowedAssetShare"])/10**pair_asset_decimal) * total_b_amt_per_share, self.round_decimals)
+                            # convert to dollar format: 100000  -> 1,000,000
+                            user_borrow_amt_scaled = f'{user_borrow_amt_scaled:,}'
                         except (ZeroDivisionError, TypeError):
                             user_borrow_amt_scaled = None
 
                         # calculate deposited collateral amount #UNIT col_symbol
                         user_dep_col_amt_scaled = round((int(pos["depositedCollateralAmount"])/ 10**pair_col_decimal) , self.round_decimals)
-
+                        # convert to dollar format: 100000  -> 1,000,000
+                        user_dep_col_amt_scaled = f'{user_dep_col_amt_scaled:,}'
                         # calcualte lent amount
                         try:
                             total_l_amt_per_share = int(pdf_pair_info["dailyHistory_totalAssetAmount"].values[0]) / int(pdf_pair_info["dailyHistory_totalAssetShare"].values[0])
                             # lent_amount =((borrowedAssetShare/10** pair_asset_decimal) * (totalAssetAmount/totalAssetShare)) # Unit FRAX
                             user_lent_amt_scaled = round((int(pos["lentAssetShare"])/ 10**pair_asset_decimal) * total_l_amt_per_share, self.round_decimals)
+                            # convert to dollar format: 100000  -> 1,000,000
+                            user_lent_amt_scaled = f'{user_lent_amt_scaled:,}'
                         except (ZeroDivisionError, TypeError):
                             user_lent_amt_scaled = None
                         # calculate current LTV
@@ -306,6 +311,8 @@ class DataIngestion:
                         # LP = user_borrow_amt_scaled / (user_col_amt_scaled * max_LTV) #Unit FRAX
                         try:
                             user_liquidation_price_scaled = round(user_borrow_amt_scaled / (user_dep_col_amt_scaled * pair_max_LTV), self.round_decimals)
+                            # convert to dollar format: 100000  -> 1,000,000
+                            user_liquidation_price_scaled = f'{user_liquidation_price_scaled:,}'
                         except (ZeroDivisionError, TypeError):
                             user_liquidation_price_scaled = None
                         notif_pos["user_borrow_amt_scaled"] = user_borrow_amt_scaled
