@@ -256,8 +256,8 @@ class DataIngestion:
                         # extract pair-level features 
                         pair_asset_decimal = int(pdf_pair_info["asset_decimals"].values[0])
                         pair_col_decimal = int(pdf_pair_info["collateral_decimals"].values[0])
-                        col_unit = pdf_pairs_dailyhistory["collateral_symbol"].values[0]
-                        pair_symbol = pdf_pairs_dailyhistory["show_pair_symbol"].values[0]
+                        col_unit = pdf_pair_info["collateral_symbol"].values[0]
+                        pair_symbol = pdf_pair_info["show_pair_symbol"].values[0]
                         pair_max_LTV = float(pdf_pair_info["maxLTV"].values[0])/ 10**5
                         pair_ex_rate = float(pdf_pair_info["dailyHistory_ex_rate_scaled"].values[0])
                         total_col_amt_scaled = int(pdf_pair_info["dailyHistory_total_col_amt_scaled"].values[0])

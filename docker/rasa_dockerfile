@@ -19,6 +19,9 @@ ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --upgrade pip
 RUN pip install -Ur requirements-dev.txt
 
+# TODO: install vim in this image 
+# RUN ["apt-get", "update"]
+# RUN ["apt-get", "install", "-y", "vim"]
 # change directory to RASA
 WORKDIR /app/src/RASA
 # Train model, If data remains same this will be skipped automatically.
@@ -33,6 +36,5 @@ fi
 # VOLUME /app/data
 VOLUME /app/src/RASA/models
 
- 
-CMD ["run","-m","models","--enable-api","--cors","*","--endpoints", "docker_endpoints.yml", "--credential", "credentials.yml", "--log-file", "rasa_out.log"]
+CMD ["run","-m","models","--enable-api","--cors","*","--endpoints", "endpoints.yml", "--credential", "credentials.yml", "--log-file", "rasa_out.log"]
 EXPOSE 5005
