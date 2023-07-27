@@ -4,18 +4,23 @@ from pymongo import MongoClient
 from time import sleep
 # from apscheduler.schedulers.background import BackgroundScheduler, BlockingScheduler
 import yaml
-# from database_connection import connect
+# from data.database_connection import connect
 from telethon.sync import TelegramClient#, events
 import time
-from mongodb_connection import mongodb_connect
 import schedule
-from querydb_actions import get_wallet_position
 import os
 from datetime import datetime
 
-(db, pairs, user_positions, user_notifications, telegram_metadata, subscription) = mongodb_connect()
+from common import get_wallet_position, mongodb_connect
 
-config_stream = open("../common_config.yml",'r')
+print("Inside notification_sender.py...")
+
+# python_path = r"D:\Telegram_Bot(dummy)\Rasa_enhancements_final\FraxBot\src"
+python_path = os.environ.get('PYTHONPATH')
+(db, pairs, user_positions, user_notifications, telegram_metadata, subscription) = mongodb_connect()
+print(python_path+os.sep+"common_config.yml")
+config_stream = open(python_path+os.sep+"common_config.yml",'r')
+# config_stream = open("../common_config.yml",'r')
 config = yaml.load(config_stream, Loader=yaml.BaseLoader)
 
 API_ID = config['telegram']['api_id']
@@ -33,6 +38,7 @@ client = TelegramClient(session_name, API_ID, API_HASH).start(bot_token=BOT_TOKE
 
 
 def send_notification():
+    print("Inside send_notification() ...")
     with client :
         # Send a message to your bot
         query = subscription.find()
@@ -45,24 +51,12 @@ def send_notification():
             for wallet_id in wallets:
                 # try:
                 # get the listy of messages to display
-                msg_user_notif = get_wallet_position(user_notifications, wallet_id)
+                msg_user_notif = get_wallet_position(user_notifications, wallet_id,"notification")
                 for msg in msg_user_notif:
-                    client.send_message(user_id, msg)
-                # except:
-                #     print("Error in sending notification... ")
+                    client.send_message(user_id, msg,parse_mode='html')
+    return
 
-if __name__=="__main__":
+if __name__ == '__main__':
+
+    (db, pairs, user_positions, user_notifications, telegram_metadata, subscription) = mongodb_connect()
     send_notification()
-
-    # # Schedule the notification to be sent every day at a specific time
-    # # s = schedule.every(60*30).seconds.do(send_notification)
-    # s = schedule.every(20).seconds.do(send_notification)
-
-    # # s = schedule.every().day.at("08:00:00", "America/New_York").do(send_notification)
-    # print("\n",s.next_run)
-
-    # # Start an infinite loop to run the scheduler
-    # while True:
-    #     schedule.run_pending()
-    #     time.sleep(2)
-    #     # time.sleep(200)

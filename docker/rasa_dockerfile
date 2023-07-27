@@ -1,0 +1,40 @@
+# Start your image with a node base image
+FROM rasa/rasa:3.6.0
+
+# The /app directory should act as the main application directory
+WORKDIR /app
+USER root
+# Copy local directories to the current local directory of our docker image (/app)
+COPY . /app
+
+# declare python paths
+ENV PYTHONPATH=/app/src
+ENV MONGO_CERTIFICATE_PATH=/app
+
+# Start the app using serve command
+RUN python -m venv /opt/venv
+# Enable venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+RUN pip install --upgrade pip
+RUN pip install -Ur requirements-dev.txt
+
+# TODO: install vim in this image 
+# RUN ["apt-get", "update"]
+# RUN ["apt-get", "install", "-y", "vim"]
+# change directory to RASA
+WORKDIR /app/src/RASA
+# Train model, If data remains same this will be skipped automatically.
+ARG TRAIN
+
+RUN if [ "$TRAIN" = "true" ] ; then \
+    rasa train; \
+fi
+# RUN rasa train
+
+# VOLUME /app
+# VOLUME /app/data
+VOLUME /app/src/RASA/models
+
+CMD ["run","-m","models","--enable-api","--cors","*","--endpoints", "endpoints.yml", "--credential", "credentials.yml", "--log-file", "rasa_out.log"]
+EXPOSE 5005

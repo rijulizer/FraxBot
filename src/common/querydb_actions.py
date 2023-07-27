@@ -5,6 +5,9 @@ import yaml
 import os
 import numpy as np
 import pandas as pd
+import colorama
+from colorama import Fore, Style
+import markdown
 
 def get_subscribed_wallets(collection_db, user_id: str):
     """
@@ -132,7 +135,10 @@ def check_returning_user(collection_db, user_id: str):
 
     return returning_user
 
-def get_wallet_position(collection_db, wallet_id: str):
+def convert2hyperlink(text, link):
+    return(f"{Fore.BLUE}{text}{Style.RESET_ALL} ({link})")
+
+def get_wallet_position(collection_db, wallet_id: str, flag: str):
 
     print("Trying to fetch wallet position...")
     # get information for each wallet id
@@ -141,25 +147,41 @@ def get_wallet_position(collection_db, wallet_id: str):
         str_position_values = []
         if res['positions']:
             # position_values = """"""
-            str_position_values.append(f"This wallet- {wallet_id} has {len(res['positions'])} valid position(s) - ")
+            str_position_values.append(f"This wallet- {wallet_id} has {len(res['positions'])} valid position(s).")
             for pos in res['positions']:
+                if flag=="notification":
+                    opening_tag = "<b>"
+                    closing_tag = "</b>"
+                else:
+                    opening_tag=""
+                    closing_tag=""
                 str_position_values.append(f'''\n
-Pair Id:  {pos["pair_id"]},
-Pair Symbol:  {pos["pair_symbol"]},
-Exchange Rate:  {pos["pair_ex_rate"]} FRAX,
-Borrow APR:  {pos["pair_borrow_APR"]} %,
-Lend APR:  {pos["pair_lend_APR"]} %,
-Borrwed Amount:  {pos["user_borrow_amt_scaled"]} FRAX,
-Deposited Collateral:  {pos["user_dep_col_amt_scaled"]} {pos["collateral_symbol"]},
-Lent Amount:  {pos["user_lent_amt_scaled"]} FRAX,
-Current LTV:  {pos["user_current_LTV"]} %,
-Liquidation Price:  {pos["user_liquidation_price_scaled"]} FRAX,
-Last Updated on: {pos["pos_datetime"]}
+•  {opening_tag}Pair Id{closing_tag}:  {pos["pair_id"]},
+•  {opening_tag}Pair Symbol{closing_tag}:  {pos["pair_symbol"]},
+•  {opening_tag}Exchange Rate{closing_tag}:  {pos["pair_ex_rate"]} FRAX,
+•  {opening_tag}Borrow APR{closing_tag}:  {pos["pair_borrow_APR"]} %,
+•  {opening_tag}Lend APR{closing_tag}:  {pos["pair_lend_APR"]} %,
+•  {opening_tag}Borrwed Amount{closing_tag}:  {pos["user_borrow_amt_scaled"]} FRAX,
+•  {opening_tag}Deposited Collateral{closing_tag}:  {pos["user_dep_col_amt_scaled"]} {pos["collateral_symbol"]},
+•  {opening_tag}Lent Amount{closing_tag}:  {pos["user_lent_amt_scaled"]} FRAX,
+•  {opening_tag}Current LTV{closing_tag}:  {pos["user_current_LTV"]} %,
+•  {opening_tag}Liquidation Price{closing_tag}:  {pos["user_liquidation_price_scaled"]} FRAX,
+•  {opening_tag}Last Updated on{closing_tag}: {pos["pos_datetime"]}
     ''')
         else:
             str_position_values.append(f"This wallet - {wallet_id} has no valid positions.\n")
 
-        str_hyper_links = f"""\nFor more information, visit-
+#         str_hyper_links = f"""\nFor more information, visit-
+# etherscan - {res['hlink_etherscanner']}
+# facts-frax-finance - {res['hlink_fraxfacts']}
+# """
+        if flag=="notification":
+            str_hyper_links = f"""\nFor more information, visit-
+{markdown.markdown(f"[etherscan]({res['hlink_etherscanner']})").replace('<a ', '<a rel="noreferrer" ')}
+{markdown.markdown(f"[facts-frax-finance]({res['hlink_fraxfacts']})").replace('<a ', '<a rel="noreferrer" ')}
+"""
+        else:
+            str_hyper_links = f"""\nFor more information, visit-
 etherscan - {res['hlink_etherscanner']}
 facts-frax-finance - {res['hlink_fraxfacts']}
 """

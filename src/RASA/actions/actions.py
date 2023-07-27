@@ -1,7 +1,10 @@
 import sys
-# import os
-sys.path.append(r'D:\Telegram_Bot(dummy)\Rasa_enhancements_3\FraxBot\src')
+import os
+# sys.path.append(r'D:\Telegram_Bot(dummy)\Rasa_enhancements_final\FraxBot\src')
 # sys.path
+python_path = os.environ.get('PYTHONPATH')
+print(python_path)
+sys.path.append(python_path)
 
 from typing import Any, Text, Dict, List
 from rasa_sdk import Action, Tracker
@@ -19,7 +22,7 @@ from common import get_subscribed_wallets, add_wallets_for_subscription, update_
 from common import format_telegram_metadata, upload_channel_metadata, check_returning_user
 from common import get_wallet_position
 # get monogdb collections
-(db, telegram_metadata, subscription, pairs, wallet_positions) = mongodb_connect()
+(db, pairs, user_positions, user_notifications, telegram_metadata, subscription) = mongodb_connect()
 
 # debug
 super_user_id = None#"6278581231" # must be a string
@@ -171,7 +174,8 @@ class ActionUnsubWallet(Action):
             user_id  = str(tracker.sender_id) 
         else:
             user_id = super_user_id
-        unsub_wallet = tracker.slots["slot_wallet_id"]
+        # always change wallet id to lowercase
+        unsub_wallet = tracker.slots["slot_wallet_id"].lower()
         print(f" [debug] unsub_wallet - {unsub_wallet}")
 
         subscribed_wallets = get_subscribed_wallets(subscription, user_id)
@@ -215,8 +219,9 @@ class ActionGetSublist(Action):
 
             subscribed_wallets = get_subscribed_wallets(subscription, user_id)
             if subscribed_wallets:
-                sub_list_str = "\n".join(subscribed_wallets)
-                return_text = f"You have subscribed the following wallets -\n {sub_list_str}" #TODO: Modify for better looking text
+                sub_list_str = "\n‣  ".join(subscribed_wallets)
+
+                return_text = f"You have subscribed the following wallets -\n‣  {sub_list_str}" #TODO: Modify for better looking text
         dispatcher.utter_message(text=return_text)
 
         if tracker.latest_message["intent"]["name"]=="subscribe_daily_updates":
@@ -252,8 +257,8 @@ class ActionSubscribe(Action):
             user_id  = str(tracker.sender_id) 
         else:
             user_id = super_user_id
-
-        sub_wallet = tracker.slots["slot_wallet_id"]
+        # always change wallet id to lowercase
+        sub_wallet = tracker.slots["slot_wallet_id"].lower()
         print(f" [debug] sub_wallet - {sub_wallet}")
 
         subscribed_wallets = get_subscribed_wallets(subscription, user_id)
@@ -330,10 +335,11 @@ class ActionGetPosition(Action):
             user_id  = str(tracker.sender_id) 
         else:
             user_id = super_user_id
-        position_wallet = tracker.slots["slot_wallet_id"]
+        # always change wallet id to lowercase
+        position_wallet = tracker.slots["slot_wallet_id"].lower()
         print(f" [debug] position_wallet - {position_wallet}")
         # TODO: Implement get_wallet_position():
-        position_data = get_wallet_position(wallet_positions, position_wallet)
+        position_data = get_wallet_position(user_notifications, position_wallet,"current status")
         subscribed_wallets = get_subscribed_wallets(subscription, user_id)
         slot_wallet_has_position = False
         slot_wallet_subscribed = False
@@ -346,10 +352,16 @@ class ActionGetPosition(Action):
             if position_wallet in subscribed_wallets:
                 # the wallet not in database
                 slot_wallet_subscribed = True
-                dispatcher.utter_message(text= f"Here is your current wallet positions - {str(position_data)}")
+                # dispatcher.utter_message(text= f"Here is your current wallet positions - {str(position_data)}")
+                # dispatcher.utter_message(text=f"Your wallet has {len(position_data)} positions.")
+                for msg in position_data:
+                    dispatcher.utter_message(text=msg)
                 listen_event = None 
             else:
-                dispatcher.utter_message(text= f"Here is your current wallet positions - {str(position_data)}")
+                # dispatcher.utter_message(text= f"Here is your current wallet positions - {str(position_data)}")
+                # dispatcher.utter_message(text=f"Your wallet has {len(position_data)} positions.")
+                for msg in position_data:
+                    dispatcher.utter_message(text=msg)
                 buttons = [
                     {"title": "Yes" , "payload": "/affirm"},
                     {"title": "No", "payload": "/deny"},

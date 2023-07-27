@@ -1,5 +1,6 @@
 import sys
-sys.path.append('d:\\FRAX_project\\FraxBot\\src\\')
+# sys.path.append('d:\\FRAX_project\\FraxBot\\src\\')
+# sys.path.append(r'D:\Telegram_Bot(dummy)\Rasa_enhancements_final\FraxBot\src')
 
 import requests
 from pprint import pprint
@@ -12,9 +13,10 @@ import yaml
 import schedule
 import numpy as np
 import pandas as pd
-
+import os
 from common import mongodb_connect
 
+python_path = os.environ.get('PYTHONPATH')
 
 def datetime_from_timestamp(timestamp):
     try:
@@ -254,8 +256,8 @@ class DataIngestion:
                         # extract pair-level features 
                         pair_asset_decimal = int(pdf_pair_info["asset_decimals"].values[0])
                         pair_col_decimal = int(pdf_pair_info["collateral_decimals"].values[0])
-                        col_unit = pdf_pairs_dailyhistory["collateral_symbol"].values[0]
-                        pair_symbol = pdf_pairs_dailyhistory["show_pair_symbol"].values[0]
+                        col_unit = pdf_pair_info["collateral_symbol"].values[0]
+                        pair_symbol = pdf_pair_info["show_pair_symbol"].values[0]
                         pair_max_LTV = float(pdf_pair_info["maxLTV"].values[0])/ 10**5
                         pair_ex_rate = float(pdf_pair_info["dailyHistory_ex_rate_scaled"].values[0])
                         total_col_amt_scaled = int(pdf_pair_info["dailyHistory_total_col_amt_scaled"].values[0])
@@ -281,17 +283,22 @@ class DataIngestion:
                             total_b_amt_per_share = int(pdf_pair_info["dailyHistory_totalBorrowAmount"].values[0])/int(pdf_pair_info["dailyHistory_totalBorrowShare"].values[0])
                             # borrow_amount =((borrowedAssetShare/10** pair_asset_decimal) * (totalBorrowAmount/totalBorrowShare)) # Unit FRAX
                             user_borrow_amt_scaled = round((int(pos["borrowedAssetShare"])/10**pair_asset_decimal) * total_b_amt_per_share, self.round_decimals)
+                            # convert to dollar format: 100000  -> 1,000,000
+                            user_borrow_amt_scaled = f'{user_borrow_amt_scaled:,}'
                         except (ZeroDivisionError, TypeError):
                             user_borrow_amt_scaled = None
 
                         # calculate deposited collateral amount #UNIT col_symbol
                         user_dep_col_amt_scaled = round((int(pos["depositedCollateralAmount"])/ 10**pair_col_decimal) , self.round_decimals)
-
+                        # convert to dollar format: 100000  -> 1,000,000
+                        user_dep_col_amt_scaled = f'{user_dep_col_amt_scaled:,}'
                         # calcualte lent amount
                         try:
                             total_l_amt_per_share = int(pdf_pair_info["dailyHistory_totalAssetAmount"].values[0]) / int(pdf_pair_info["dailyHistory_totalAssetShare"].values[0])
                             # lent_amount =((borrowedAssetShare/10** pair_asset_decimal) * (totalAssetAmount/totalAssetShare)) # Unit FRAX
                             user_lent_amt_scaled = round((int(pos["lentAssetShare"])/ 10**pair_asset_decimal) * total_l_amt_per_share, self.round_decimals)
+                            # convert to dollar format: 100000  -> 1,000,000
+                            user_lent_amt_scaled = f'{user_lent_amt_scaled:,}'
                         except (ZeroDivisionError, TypeError):
                             user_lent_amt_scaled = None
                         # calculate current LTV
@@ -304,6 +311,8 @@ class DataIngestion:
                         # LP = user_borrow_amt_scaled / (user_col_amt_scaled * max_LTV) #Unit FRAX
                         try:
                             user_liquidation_price_scaled = round(user_borrow_amt_scaled / (user_dep_col_amt_scaled * pair_max_LTV), self.round_decimals)
+                            # convert to dollar format: 100000  -> 1,000,000
+                            user_liquidation_price_scaled = f'{user_liquidation_price_scaled:,}'
                         except (ZeroDivisionError, TypeError):
                             user_liquidation_price_scaled = None
                         notif_pos["user_borrow_amt_scaled"] = user_borrow_amt_scaled
@@ -327,19 +336,8 @@ class DataIngestion:
 if __name__ == '__main__':
     try:
         print("Initializing Data Ingestion \n...")
-        # connect MDB collectioons
-        (db, pairs, user_positions, user_notifications, telegram_metadata, subscription) = mongodb_connect()
-        # manually run 
+
         data_ingest = DataIngestion()
-        # # schedule
-        # # schedule.every(10).seconds.do(send_notification)
-        # # segregate_data(query)
-        # s = schedule.every().day.at("13:50", "America/New_York").do(DataIngestion)
-        # print("\n",s.next_run)
-        # # Start an infinite loop to run the scheduler
-        # while True:
-        #     schedule.run_pending()
-        #     time.sleep(1000)
 
     except Exception as error:
         print("An exception occurred:", type(error).__name__)
