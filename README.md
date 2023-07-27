@@ -1,4 +1,7 @@
 # Frax Bot 
+<img src = https://github.com/rijulizer/FraxBot/assets/66196631/dc9d9e53-f163-4029-ae55-973614028720 width="120" height="120">
+
+Interact with the bot [here](https://telegram.me/frax_lend_bot)!
 
 ## About Frax Bot
 Frax Bot is a ```Telegram bot powered by RASA``` that provides convenient access to the status of Frax wallets. Users can effortlessly ```view the current status of their Frax wallet``` and subscribe to receive daily notifications about subscribed wallet(s). ```Managing subscriptions``` is a breeze, allowing users to ```subscribe``` and ```unsubscribe``` from multiple wallets at any time. Frax Bot ensures a seamless conversational experience by tracking user history, identifying returning users, and keeping a record of subscribed wallets.
@@ -26,7 +29,9 @@ Frax bot is also ```user-friendly``` as it provides the users with ```options```
 **Rasa Bot - Training Data** - NLU training data consists of user utterances grouped by intent, along with entities representing structured information within the messages. These entities provide the necessary details for the bot to fulfill the intent. The provided nlu.yml file contains commonly used data to train the underlying Rasa model. Enhancing the bot's performance is possible by collecting more diverse data or enabling it to learn from conversations during inference.
 
 ## Folder structure
-
+<details>
+<summary>Frax Bot in a nutshell!</summary>
+```bash
 └── FraxBot
     ├── LICENSE
     ├── README.md
@@ -81,29 +86,45 @@ Frax bot is also ```user-friendly``` as it provides the users with ```options```
             ├── query_subgraph.ipynb
             ├── test_data_ingestion.ipynb
             └── test_data_ingestion_module.ipynb
+```
+</details>
 
-## Local execution
+## Configure Frax Bot
+
+* To integrate Telegram Bot with Rasa, add the bot token as **"access_token"** and your bot name as **"verify"** in the **credentials.yml** file
+* Configure **common_config.yml** with details of database/collections that store Frax data and credentials of your Telegram Bot
+    * **mongo_db**:
+        * **uri**: *URl for access to Frax database in MongoDB Atlas*
+        * **database**: *Name of database in MongoDB Atlas*
+        * **subscription_schema**: *Name of Collection that maps Frax wallets to Telegram users*
+        * **pairs_schema**: *Name of Collection that stores Frax Lend Pairs information, retrieved from Frax*
+        * **telegram_metadata_schema**: *Name of Collection that stores Telegram metadata for Frax Bot users*
+        * **user_positions_schema**: *Name of Collection that stores Wallet position information*
+        * **user_notifications_schema**: *Name of Collection that stores data that will be sent out to subscribed Frax Bot users during daily notifications*
+    * **telegram**:
+        * **api_id**: *API id of your registered Telegram application*
+        * **api_hash**: *API hash of your registered Telegram application*        
+        * **bot_token**: *Bot token, obtained from Bot Father*
+* In the repo folder, place a certificate file (PEM) that allows secure connections to the MongoDB database and rename it as **"mongodb_user_certificate.pem"**
+
+## Local Deployment
 <details>
 <summary>Set up the environment</summary>
 
 This code base has been developed and validated in ```Python 3.9```
-*Clone the repo and navigate to the **FraxBot** folder for the next steps
-*Create a python virtual environment
+* Clone the repo and navigate to the **FraxBot** folder for the next steps
+* Create a python virtual environment
 ```bash
 python -m venv bot_venv
 source bot_venv/bin/activate
 ```
-*After creating the virtual environment, install the required packages, as listed in *requirements.txt*
+* After creating the virtual environment, install the required packages, as listed in *requirements.txt*
 ```bash
 pip install -r requirements.txt
 ```
 </details>
 <details>
-<summary>Setting up Rasa</summary>
-
-1. To create the bot, go to ```Bot Father```, enter ```/newbot``` and follow the instructions.
-2. Add the bot token as **"access_token"** and your bot name as **"verify"** 
-
+<summary>Bring Frax Bot to Life with Ease!</summary>
 * Use Ngrok to expose the local server 5005 (default Rasa server) to the Internet
 ```bash
 ngrok http 5005
@@ -113,39 +134,14 @@ ngrok http 5005
 ```bash
 rasa run
 ```
-5. Ensure that Rasa action server is up on another terminal
+* Ensure that Rasa action server is up on another terminal
 ```bash
 rasa run actions
 ```
-6. Navigate to **common** folder and run **data_ingestion.py** to extract latest data about Frax
+* Navigate to **common** folder and run **scheduler_module.py**. This will refresh the Frax database periodically and allow the Telegram bot to send daily notifications to subscribed users.
 ```bash
 python data_ingestion.py
 ```
-7. Similarly, from ```common``` folder, run notification_sender.py to send daily updates to users who have subscribed to Frax wallet(s)
-```bash
-python notification_sender.py
-```
-8. Set up the relevant information in ```common_config.yml```
-
-    * **mongo_db**:
-        * **uri**: *URl for access to Frax database in MongoDB Atlas*
-        * **database**: *Name of database in MongoDB Atlas*
-        * **wallets_schema**: *Name of Collection that stores Wallet position information*
-        * **subscription_schema**: *Name of Collection that maps Frax wallets to Telegram users*
-        * **pairs_schema**: *Name of Collection that stores Pairs information, retrieved from Frax*
-        * **telegram_metadata_schema**: *Name of Collection that stores Telegram metadata for Frax Bot users*
-    * **telegram**:
-        * **api_id**: *API id of your registered Telegram application*
-        * **api_hash**: *API hash of your registered Telegram application*        
-        * **bot_token**: *Bot token, obtained from Bot Father*
-</details>
-<details> 
-<summary>Generating API id and hash for Telegram Application</summary>
-1. Log in to your Telegram core: https://my.telegram.org.
-2. Go to "API development tools" and fill out the form (Ensure that you are providing a few lines for description. In place of URL, you can add ```https://api.telegram.org/bot{bot_token}/``` or choose to leave it blank)
-3. After submitting the form, you will get basic addresses as well as the **api_id** and **api_hash** parameters required for user authorization.
-
-*Note: For the moment each number can only have one api_id connected to it.*
 </details>
 
 ## Manual Deployment in Azure VM
@@ -172,7 +168,9 @@ Replace the placeholders with the following:
 
 **<time_in_%H:%M_format>:** The time (in 24-hrs format) when the bot should send notifications (e.g., "09:30")
 
-**<Continent/City>:** The corresponding time zone for the notifications (e.g., America/New_York)
+**<Continent/City>:** The corresponding time zone for the notifications (e.g., America/New_York) 
+
+_Time zones compatible with the scheduluer moduler are listed [here](https://gist.github.com/heyalexej/8bf688fd67d7199be4a1682b3eec7568)_
 
 **<time_in_minutes>:** The time interval in minutes after which the database is refreshed (e.g., 60)
 
@@ -240,4 +238,25 @@ docker run -d -p <host_port>:5005 -v .:$(pwd)/src/RASA --network <network_name> 
 Replace **<host_port>** with the port number on the host machine where you want to access Rasa Core, <network_name> with the name of the Docker network you created for Ngrok, and <image_name> with the name of the Docker image you built in the previous step.
 
 </details>
+
+At the end of this road, you'll find 4 active Docker images, along with their corresponding containers, and most importantly, a fully functional Telegram Bot powered by Rasa!
+| View current wallent status            | Current wallet status results          |
+| -------------------------------------- | -------------------------------------- |
+| <img src="https://github.com/rijulizer/FraxBot/assets/66196631/6aa2768d-1fdf-485f-b351-987a1ab42cc7" alt="View current wallent status" width="180" height="400">  | <img src="https://github.com/rijulizer/FraxBot/assets/66196631/ade1a00f-91eb-4825-b769-d2ffe4b3f014" alt="Current wallet status results" width="180" height="400"> | 
+
+| Unsubscribe            | View subscription list          |
+| -------------------------------------- | -------------------------------------- |
+| <img src="https://github.com/rijulizer/FraxBot/assets/66196631/83ab0412-e94d-4b32-ab0b-565f88248017" alt="Unsubscribe" width="180" height="400">  | <img src="https://github.com/rijulizer/FraxBot/assets/66196631/dbf51358-f9c2-4ae1-b4b0-57c12fe88b70" alt="View Subscription list" width="180" height="400"> | 
+
+| Subscribe            | Subscription successful         |
+| -------------------------------------- | -------------------------------------- |
+| <img src="https://github.com/rijulizer/FraxBot/assets/66196631/6888bc70-4311-4e05-a458-c983839861fd" alt="Subscribe" width="180" height="400">  | <img src="https://github.com/rijulizer/FraxBot/assets/66196631/4b2673a2-ace0-4adb-b09c-64afa7e322da" alt="Subscription successful" width="180" height="400">
+ | 
+
+        
+        
+        
+        
+        
+
 
