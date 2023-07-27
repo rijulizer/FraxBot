@@ -6,9 +6,9 @@ Interact with the bot [here](https://telegram.me/frax_lend_bot)!
 ## About Frax Bot
 Frax Bot is a ```Telegram bot powered by RASA``` that provides convenient access to the status of Frax wallets. Users can effortlessly ```view the current status of their Frax wallet``` and subscribe to receive daily notifications about subscribed wallet(s). ```Managing subscriptions``` is a breeze, allowing users to ```subscribe``` and ```unsubscribe``` from multiple wallets at any time. Frax Bot ensures a seamless conversational experience by tracking user history, identifying returning users, and keeping a record of subscribed wallets.
 
-```Rasa for the win``` - Rasa bots utilize trained models to understand user inputs, predict intents, extract entities, and determine the appropriate actions or responses. The bot can maintain context and carry out a meaningful conversation by tracking the dialogue history and considering previous user inputs. With Rasa in backend, Frax Bot endaevours to engage with users in real-time conversations, responding to their inputs and guiding them through the dialogue flow.
+```Rasa for the win``` - Rasa bots utilize trained models to understand user inputs, predict intents, extract entities, and determine the appropriate actions or responses. The bot can maintain context and carry out a meaningful conversation by tracking the dialogue history and considering previous user inputs. With Rasa in backend, Frax Bot endeavors to engage with users in real-time conversations, responding to their inputs and guiding them through the dialogue flow.
 
-Frax bot is also ```user-friendly``` as it provides the users with ```options``` at every stage, depending on their requests and earlier interactions with the bot. User can select appropriate options to steer the conversation in the intended direction and accomplish their task. The user can also ```type in their request``` in stead of choosing any option prompted by the bot. The bot will try to map the request to the right (or most similar) task and proceed the conversation. Thus, Frax bot is able to achieve ``flexibility`` without losing its ```simplicity```.
+Frax bot is also ```user-friendly``` as it provides the users with ```options``` at every stage, depending on their requests and earlier interactions with the bot. User can select appropriate options to steer the conversation in the intended direction and accomplish their task. The user can also ```type in their request```instead of choosing any option prompted by the bot. The bot will try to map the request to the right (or most similar) task and proceed with the conversation. Thus, Frax bot is able to achieve ``flexibility`` without losing its ```simplicity```.
 
 ## Bot functionalities
 
@@ -30,7 +30,8 @@ Frax bot is also ```user-friendly``` as it provides the users with ```options```
 
 ## Folder structure
 <details>
-<summary>Frax Bot in a nutshell!</summary>
+<summary><b>Frax Bot in a nutshell!</b></summary>
+
 ```bash
 └── FraxBot
     ├── LICENSE
@@ -109,7 +110,7 @@ Frax bot is also ```user-friendly``` as it provides the users with ```options```
 
 ## Local Deployment
 <details>
-<summary>Set up the environment</summary>
+<summary><b>Set up the environment</b></summary>
 
 This code base has been developed and validated in ```Python 3.9```
 * Clone the repo and navigate to the **FraxBot** folder for the next steps
@@ -124,7 +125,8 @@ pip install -r requirements.txt
 ```
 </details>
 <details>
-<summary>Bring Frax Bot to Life with Ease!</summary>
+<summary><b>Bring Frax Bot to Life with Ease!</b></summary>
+    
 * Use Ngrok to expose the local server 5005 (default Rasa server) to the Internet
 ```bash
 ngrok http 5005
@@ -146,14 +148,15 @@ python data_ingestion.py
 
 ## Manual Deployment in Azure VM
 <details>
-<summary>Step 1: Set up an Azure Linux Virtual Machine</summary>
+<summary><b>Step 1: Set up an Azure Linux Virtual Machine</b></summary>
 </details>
 <details>
-<summary>Step 2: Set up the Bot</summary>
+<summary><b>Step 2: Set up the Bot</b></summary>
+    
 * Navigate to the folder where you have cloned the bot repository
 </details>
 <details>
-<summary>Step 3: Deploy the Scheduler for Data Ingestion and Notifications</summary>
+<summary><b>Step 3: Deploy the Scheduler for Data Ingestion and Notifications</b></summary>
 
 * Build the Docker image for the scheduler using the provided scheduler Dockerfile located at ./FraxBot/docker/scheduler_dockerfile.
 ```bash
@@ -179,7 +182,7 @@ _Time zones compatible with the scheduluer moduler are listed [here](https://gis
 **<image_name>:** The name of the Docker image you built earlier
 </details>
 <details>
-<summary>Step 4: Deploy Rasa Action Server</summary>
+<summary><b>Step 4: Deploy Rasa Action Server</b></summary>
 
 * Build the Docker image for running the Rasa action server on port 5055 using the provided action server Dockerfile located at ./FraxBot/docker/action_server_dockerfile.
 ```bash
@@ -197,7 +200,8 @@ _Check if the action server is up by visiting ```http://<azure_vm_ip>:<port>```,
 _
 </details>
 <details>
-<summary>Step 5: Deploy Ngrok</summary>
+<summary><b>Step 5: Deploy Ngrok</b></summary>
+
 
 These steps will deploy Ngrok on Docker, enabling access to and interaction with the Rasa Core service from the host machine.
 
@@ -217,7 +221,8 @@ Replace **<network_name>** with the name of the Docker network created in the pr
 
 </details>
 <details>
-<summary>Step 6: Deploy Rasa Core</summary>
+<summary><b>Step 6: Deploy Rasa Core</b></summary>
+
 
 These steps will deploy Rasa Core and connect it with the Ngrok container, allowing external access to the Rasa Core service via the tunneled HTTPS host. The action server will also be linked to Rasa Core for handling custom actions.
 
@@ -239,7 +244,10 @@ Replace **<host_port>** with the port number on the host machine where you want 
 
 </details>
 
-At the end of this road, you'll find 4 active Docker images, along with their corresponding containers, and most importantly, a fully functional Telegram Bot powered by Rasa!
+:tada: At the end of this road, you'll find 4 active Docker images, along with their corresponding containers, and most importantly, a fully functional Telegram Bot powered by Rasa!
+
+![image](https://github.com/rijulizer/FraxBot/assets/66196631/ce33108e-d953-4e40-8bfd-a0e7c800e04a)
+
 | View current wallent status            | Current wallet status results          |
 | -------------------------------------- | -------------------------------------- |
 | <img src="https://github.com/rijulizer/FraxBot/assets/66196631/6aa2768d-1fdf-485f-b351-987a1ab42cc7" alt="View current wallent status" width="180" height="400">  | <img src="https://github.com/rijulizer/FraxBot/assets/66196631/ade1a00f-91eb-4825-b769-d2ffe4b3f014" alt="Current wallet status results" width="180" height="400"> | 
