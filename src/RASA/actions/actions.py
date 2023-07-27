@@ -174,7 +174,8 @@ class ActionUnsubWallet(Action):
             user_id  = str(tracker.sender_id) 
         else:
             user_id = super_user_id
-        unsub_wallet = tracker.slots["slot_wallet_id"]
+        # always change wallet id to lowercase
+        unsub_wallet = tracker.slots["slot_wallet_id"].lower()
         print(f" [debug] unsub_wallet - {unsub_wallet}")
 
         subscribed_wallets = get_subscribed_wallets(subscription, user_id)
@@ -256,8 +257,8 @@ class ActionSubscribe(Action):
             user_id  = str(tracker.sender_id) 
         else:
             user_id = super_user_id
-
-        sub_wallet = tracker.slots["slot_wallet_id"]
+        # always change wallet id to lowercase
+        sub_wallet = tracker.slots["slot_wallet_id"].lower()
         print(f" [debug] sub_wallet - {sub_wallet}")
 
         subscribed_wallets = get_subscribed_wallets(subscription, user_id)
@@ -334,7 +335,8 @@ class ActionGetPosition(Action):
             user_id  = str(tracker.sender_id) 
         else:
             user_id = super_user_id
-        position_wallet = tracker.slots["slot_wallet_id"]
+        # always change wallet id to lowercase
+        position_wallet = tracker.slots["slot_wallet_id"].lower()
         print(f" [debug] position_wallet - {position_wallet}")
         # TODO: Implement get_wallet_position():
         position_data = get_wallet_position(user_notifications, position_wallet,"current status")
