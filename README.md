@@ -20,7 +20,7 @@ Frax bot is also ```user-friendly``` as it provides the users with ```options```
 
 * **Get Subscription list** - Managing subscriptions is also very simple with Frax Bot. Users can view their current subscription list by selecting the suitable options prompted by the bot. This enables them to make informed decisions about subscribing or unsubscribing to wallets.
 
-* **Send Notifications** - Users with active subscriptions to Frax wallets receive daily notifications regarding their wallet position status. These notifications are delivered reliably, even if the user's Telegram app is not currently open. If a subscribed wallet no longer exists, the user will stop receiving notifications for it. However, if the wallet is restored, the user will resume receiving notifications for that wallet.
+* **Send Notifications daily** - Users with active subscriptions to Frax wallets receive ```daily notifications at 21:30 IST/ 09:00 PT``` regarding their wallet position status. These notifications are delivered reliably, even if the user's Telegram app is not currently open. If a subscribed wallet no longer exists, the user will stop receiving notifications for it. However, if the wallet is restored, the user will resume receiving notifications for that wallet.
 
 ## Data
 
