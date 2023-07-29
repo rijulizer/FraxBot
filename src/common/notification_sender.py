@@ -54,6 +54,9 @@ def send_notification():
                 msg_user_notif = get_wallet_position(user_notifications, wallet_id,"notification")
                 for msg in msg_user_notif:
                     client.send_message(user_id, msg,parse_mode='html')
+
+    # time.sleep(2)
+    print("Send Notification task is executed at:", time.strftime('%H:%M:%S'))
     return
 
 if __name__ == '__main__':
