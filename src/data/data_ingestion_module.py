@@ -101,7 +101,7 @@ class DataIngestion:
         self.data_users_positions = self.get_user_positions(user_positions)
         print("[Step-3]: Creating and ingesting user notifications...\n")
         self.data_notifications = self.create_notification_data(self.data_users_positions, self.pdf_pairs_dailyhistory, user_notifications)
-        print("[Process Completed]")
+        print("[DI Process Completed]")
     
     def simplify_dailyHistory(self, data_list_dict: list[dict], key: str):
         """
@@ -114,7 +114,7 @@ class DataIngestion:
                 data_dict[key] = data_dict[key][0]
             else:
                 raise AttributeError(f"Pairs data data {key} format is wrong")
-
+        print('---------------------------------- Function: simplify_dailyHistory -------------------------------------')
         return data_list_dict
     
     def filter_zero_positions(self, pos: dict) ->bool:
@@ -191,6 +191,7 @@ class DataIngestion:
                 pairs_collections.drop()
                 pairs_collections.insert_many(data_pairs_dailyhistory)
                 
+        print('---------------------------------- Function: get_pairs_dailyhistory -------------------------------------')
         return pdf_pairs_dailyhistory, data_pairs_dailyhistory
     
     def get_user_positions(self, user_positions_collection) -> list[dict]: 
@@ -227,7 +228,7 @@ class DataIngestion:
         print("Running MongoDB operations on user_positions_collection...")
         user_positions_collection.drop()
         user_positions_collection.insert_many(data_users_positions)
-        
+        print('---------------------------------- Function: get_user_positions -------------------------------------')
         return data_users_positions
     
     def create_notification_data(self, data_users_positions, pdf_pairs_dailyhistory, db_collection):
@@ -329,7 +330,7 @@ class DataIngestion:
         print("Running MongoDB operations on user_notifications_collection...")
         db_collection.drop()  
         db_collection.insert_many(data_notifications)
-            
+        print('---------------------------------- Function: create_notification_data -------------------------------------')
         return data_notifications
 
 
@@ -340,5 +341,5 @@ if __name__ == '__main__':
         data_ingest = DataIngestion()
 
     except Exception as error:
-        print("An exception occurred:", type(error).__name__)
+        print("An exception occurred in DATA INGESTION MODULE:", type(error).__name__)
 
