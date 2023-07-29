@@ -1,7 +1,5 @@
 import sys
 
-# sys.path.append('d:\\FRAX_project\\FraxBot\\src\\')
-# sys.path.append(r'D:\Telegram_Bot(dummy)\Rasa_enhancements_final\FraxBot\src')
 
 import os
 import schedule
@@ -15,25 +13,6 @@ from data import DataIngestion
 from common import mongodb_connect, send_notification
 python_path = os.environ.get('PYTHONPATH')
 
-
-def time_conversion(scheduler_time):
-    '''Function to convert UTC time to time mentioned in common_config according to time zone '''
-    ist_tz = pytz.timezone(scheduler_time_zone)
-    # Get the current UTC time
-    utc_now = datetime.utcnow()
-    # Convert UTC time to IST time
-    ist_now = utc_now.astimezone(ist_tz)
-    hms_modified = [0,0,0,0]
-    hms = scheduler_time.split(":")
-    
-    for i in range(len(hms)):
-        hms_modified[i] = int(hms[i])
-
-    data_ingestion_time = ist_now.replace(hour=hms_modified[0], minute=hms_modified[1], second=hms_modified[2], microsecond=hms_modified[3])
-    
-    print(data_ingestion_time)
-
-    return data_ingestion_time
 
 if __name__=="__main__":
     #Read config time and time zone
@@ -74,4 +53,4 @@ if __name__=="__main__":
             time.sleep(2)
 
     except Exception as error:
-        print("An exception occurred:", type(error).__name__)
+        print("An exception occurred in SCHEDULER MODULE:", type(error).__name__)

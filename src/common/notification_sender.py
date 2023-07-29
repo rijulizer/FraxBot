@@ -51,15 +51,17 @@ def send_notification():
             for wallet_id in wallets:
                 # try:
                 # get the listy of messages to display
+                print(f"\n---------------------------------- Sending notifications for wallet {wallet_id} -------------------------------------\n")
                 msg_user_notif = get_wallet_position(user_notifications, wallet_id,"notification")
                 for msg in msg_user_notif:
                     client.send_message(user_id, msg,parse_mode='html')
 
     # time.sleep(2)
-    print("Send Notification task is executed at:", time.strftime('%H:%M:%S'))
+    print(f"Send Notification task is executed at:", time.strftime('%H:%M:%S'))
+    print("\n---------------------------------- Function: send_notification -------------------------------------\n")
     return
 
 if __name__ == '__main__':
 
-    (db, pairs, user_positions, user_notifications, telegram_metadata, subscription) = mongodb_connect()
+    # (db, pairs, user_positions, user_notifications, telegram_metadata, subscription) = mongodb_connect()
     send_notification()

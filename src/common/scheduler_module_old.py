@@ -38,21 +38,21 @@ def time_conversion(scheduler_time):
     for i in range(len(hms)):
         hms_modified[i] = int(hms[i])
 
-    data_ingestion_time = ist_now.replace(hour=hms_modified[0], minute=hms_modified[1], second=hms_modified[2], microsecond=hms_modified[3])
+    notification_time = ist_now.replace(hour=hms_modified[0], minute=hms_modified[1], second=hms_modified[2], microsecond=hms_modified[3])
 
-    print(data_ingestion_time)
+    print(notification_time)
 
-    return data_ingestion_time
+    return notification_time
 
-def dummy_notif():
-    print("="*50)
-    print(datetime.now())
-    print("Hello Mic testing...")
-    print("="*50)
-    print(datetime.now())
-    time.sleep(5)
-    print("="*50)
-    return
+# def dummy_notif():
+#     print("="*50)
+#     print(datetime.now())
+#     print("Hello Mic testing...")
+#     # print("="*50)
+#     print(datetime.now())
+#     time.sleep(5)
+#     print("="*50)
+#     return
 
 if __name__=="__main__":
     #Read config time and time zone
@@ -70,18 +70,21 @@ if __name__=="__main__":
 
     print("Calling main function in scheduler module...")
     
-    s1 = schedule.every(scheduler_time_interval).minutes.do(DataIngestion)
+    try:
+        s1 = schedule.every(scheduler_time_interval).minutes.do(DataIngestion)
 
-    notification_time = time_conversion(scheduler_time)
-    print("Notification time: ",notification_time.strftime("%H:%M:%S"))
+        notification_time = time_conversion(scheduler_time)
+        print("Notification time: ",notification_time.strftime("%H:%M:%S"))
 
-    print("="*50)
+        print("="*50)
 
-    s2 = schedule.every().day.at(notification_time.strftime("%H:%M:%S"), scheduler_time_zone).do(dummy_notif)
+        s2 = schedule.every().day.at(notification_time.strftime("%H:%M:%S"), scheduler_time_zone).do(send_notification)
 
-    print("Data ingestion scheduler will run again at -",s1.next_run)
-    print("Notification scheduler will run again at -",s2.next_run)
-    
-    while True:
-        schedule.run_pending()
-        time.sleep(2)
+        print("Data ingestion scheduler will run again at -",s1.next_run)
+        print("Notification scheduler will run again at -",s2.next_run)
+        
+        while True:
+            schedule.run_pending()
+            time.sleep(2)
+    except Exception as error:
+        print("An exception occurred in SCHEDULER MODULE:", type(error).__name__)
