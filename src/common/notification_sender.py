@@ -47,15 +47,19 @@ def send_notification():
         for users in query:
             user_id = int(users["user_id"])
             wallets = users["wallets"]
-            client.send_message(user_id, 'Daily notifications for your wallet(s) are here!')   
-            for wallet_id in wallets:
-                # try:
-                # get the listy of messages to display
-                print(f"\n---------------------------------- Sending notifications for wallet {wallet_id} -------------------------------------\n")
-                msg_user_notif = get_wallet_position(user_notifications, wallet_id,"notification")
-                for msg in msg_user_notif:
-                    client.send_message(user_id, msg,parse_mode='html')
-
+            if user_id=="1331820777" or user_id==1331820777:                
+                client.send_message(user_id, 'Daily notifications for your wallet(s) are here!')   
+                for wallet_id in wallets:                
+                    # try:
+                    # get the listy of messages to display
+                    print(f"\n---------------------------------- Sending notifications for wallet {wallet_id} -------------------------------------\n")
+                    msg_user_notif = get_wallet_position(user_notifications, wallet_id,"notification")
+                    if msg_user_notif:
+                        for msg in msg_user_notif:
+                            client.send_message(user_id, msg,parse_mode='html')
+                    else:
+                        client.send_message(user_id, f"Sorry, no information available for wallet {wallet_id} at the moment!",parse_mode='html')
+                break
     # time.sleep(2)
     print(f"Send Notification task is executed at:", time.strftime('%H:%M:%S'))
     print("\n---------------------------------- Function: send_notification -------------------------------------\n")
